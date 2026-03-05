@@ -3,7 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nousukiito – Kiinteistöt kunnittain</title>
+
+  <!-- SEO -->
+  <title>Land for sale in Lapland & Northern Finland | Nousukiito</title>
+  <meta name="description" content="Land for sale in Lapland & Northern Finland. Browse properties by municipality on map. Forest land, rural land and areas near lakes and rivers. Contact: myynti@nousukiito.net" />
+  <meta name="keywords" content="land for sale lapland, land for sale northern finland, land for sale finland, forest land finland, lakeside land finland, rural land finland, land plots lapland, kuusamo land, salla land, inari land" />
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
@@ -55,6 +59,20 @@
 
     #map { height: 420px; border-radius: 14px; overflow:hidden; margin-top:12px; border:1px solid rgba(0,0,0,.08); }
     .maphead { display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+
+    /* municipality quick filter */
+    .filterwrap { margin-top: 10px; display:flex; flex-wrap:wrap; gap:8px; }
+    .filterbtn {
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,.18);
+      background: #fff;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .filterbtn:hover { filter: brightness(.98); }
+    .filterbtn.active { border-color: rgba(0,0,0,.42); }
   </style>
 </head>
 
@@ -81,10 +99,20 @@
       <b id="mapTitle">Kartta</b>
       <span class="small" id="mapHint">Klikkaa kuntaa → listaus avautuu</span>
     </div>
+
     <div id="map"></div>
+
     <p class="muted" style="margin:10px 0 0;" id="mapNote">
       Kartta on yleiskuva: klikkaa kuntaa ja selaa kohteet. Kiinteistörajoja ei näytetä (lohkomisia voi olla kesken).
     </p>
+
+    <div class="muted" style="margin-top:10px;">
+      <b id="filterTitle">Kuntasuodatin</b>
+      <div id="municipalityFilter" class="filterwrap"></div>
+      <div class="small" id="filterNote" style="margin-top:8px;">
+        (Listaus perustuu julkaistuihin kohteisiin. Kysy myös muista kokonaisuuksista.)
+      </div>
+    </div>
   </div>
 
   <div class="card">
@@ -94,15 +122,79 @@
     </div>
 
     <p class="muted note" id="aiNote" style="margin:12px 0 0;">
-      Huom: Osalla sivuista käännös on luotu tekoälyavusteisesti. Ulkomaankieliset yhteydenotot mieluiten kirjallisena (sähköposti/viesti), jotta voimme varmistaa oikean tulkinnan.
+      Note: Some translations on this site are AI-assisted. For non-Finnish enquiries, written contact (email/message) is preferred to ensure accurate understanding.
     </p>
 
     <p class="muted" id="disclaimer" style="margin:10px 0 0;">
       Karttapalveluissa näkyvät kiinteistörajat/palstat eivät aina vastaa ajantasaista myyntitilannetta, koska lohkomisia voi olla kesken tai osia voi olla myyty aiemmin.
     </p>
+
+    <p class="muted" style="margin:10px 0 0;">
+      <b>Contact:</b> <a href="mailto:myynti@nousukiito.net">myynti@nousukiito.net</a>
+      &nbsp;•&nbsp;
+      <a href="https://www.youtube.com/channel/UCuaBkujERCrplur9Oe8nZUw/videos" target="_blank" rel="noopener">Videos (YouTube)</a>
+    </p>
   </div>
 
   <div id="out"></div>
+
+  <!-- SEO / info sections -->
+  <div class="card">
+    <h2 style="margin:0 0 10px;" id="whyTitle">Why buy land in Lapland & Northern Finland</h2>
+    <p class="muted" id="whyP1" style="margin:0 0 10px;">
+      Northern Finland offers large natural areas, forests, rivers and lakes, with low population density and clean natural environments.
+    </p>
+    <p class="muted" id="whyP2" style="margin:0;">
+      Land ownership in Finland is secure and transparent, and property transactions can be completed electronically through the Finnish Land Information System.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin:0 0 10px;" id="areasTitle">Land areas across Lapland & Northern Finland</h2>
+    <p class="muted" id="areasP1" style="margin:0 0 10px;">
+      Available land areas are located across Finnish Lapland and Northern Finland. Browse properties by municipality using the map and list above.
+    </p>
+    <p class="muted" id="areasP2" style="margin:0;">
+      Many areas are located near forests, rivers and lakes in quiet northern wilderness landscapes.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin:0 0 10px;" id="waterTitle">Lakes and rivers in Lapland & Northern Finland</h2>
+    <p class="muted" id="waterP1" style="margin:0 0 10px;">
+      Many land areas are located near lakes, rivers and natural waterways across Lapland and Northern Finland.
+    </p>
+    <p class="muted" id="waterList" style="margin:0;">
+      Muonionjoki, Lätäseno, Tarvantojoki, Kitkajoki, Oulankajoki, Kuusinkijoki, Jeesiöjoki, Kemijoki, Kitinen, Raudanjoki, Kelottijärvi, Vakkojärvi, Äkäsjärvi, Hirvasjärvi, Pahtajärvi, Kiutajärvi, Karhujärvi, Iijärvi, Suovajärvi, Livojärvi, Irnijärvi, Polojärvi, Julma-Ölkky, Ala-Ölkky, Kuoliojoki, Vääräjärvi, Kuntijärvi, Ropakkojärvi, Kemijärvi, Menesjärvi.
+    </p>
+    <p class="muted" style="margin:10px 0 0;">
+      <a href="https://www.youtube.com/channel/UCuaBkujERCrplur9Oe8nZUw/videos" target="_blank" rel="noopener">Videos of land areas and natural environments</a>
+    </p>
+  </div>
+
+  <!-- Hidden SEO block (does not change layout) -->
+  <div style="display:none" id="seoHidden">
+    Land for sale Lapland Finland
+    Land for sale Northern Finland
+    Land for sale Inari Finland
+    Land for sale Utsjoki Finland
+    Land for sale Enontekiö Finland
+    Land for sale Muonio Finland
+    Land for sale Kittilä Finland
+    Land for sale Sodankylä Finland
+    Land for sale Savukoski Finland
+    Land for sale Pelkosenniemi Finland
+    Land for sale Salla Finland
+    Land for sale Kemijärvi Finland
+    Land for sale Rovaniemi Finland
+    Land for sale Ranua Finland
+    Land for sale Posio Finland
+    Land for sale Kuusamo Finland
+    Forest land Lapland
+    Lakeside land Lapland
+    Rural land Northern Finland
+  </div>
+
 </div>
 
 <footer id="footerText">© Nousukiito — Kiinteistötunnukset kunnittain</footer>
@@ -116,7 +208,6 @@
       subtitle: "Etsi kunta, kiinteistötunnus tai nimi. Avatessa kartan tunnus kopioituu valmiiksi.",
       searchPh: "Hae: kunta (Inari) / tunnus (148-401...) / nimi (JUSSILA)",
       clear: "Tyhjennä",
-      aiNote: "Huom: Osalla sivuista käännös on luotu tekoälyavusteisesti. Ulkomaankieliset yhteydenotot mieluiten kirjallisena (sähköposti/viesti), jotta voimme varmistaa oikean tulkinnan.",
       disclaimer: "Karttapalveluissa näkyvät kiinteistörajat/palstat eivät aina vastaa ajantasaista myyntitilannetta, koska lohkomisia voi olla kesken tai osia voi olla myyty aiemmin.",
       mapTitle: "Kartta",
       mapHint: "Klikkaa kuntaa → listaus avautuu",
@@ -128,14 +219,23 @@
       noHits: "Ei osumia.",
       tryOther: "Kokeile toista hakusanaa.",
       footer: "© Nousukiito — Kiinteistötunnukset kunnittain",
-      count: "kpl"
+      filterTitle: "Kuntasuodatin",
+      filterNote: "(Listaus perustuu julkaistuihin kohteisiin. Kysy myös muista kokonaisuuksista.)",
+      contactLabel: "Yhteys",
+      whyTitle: "Miksi maa-alue Pohjois-Suomesta?",
+      whyP1: "Pohjois-Suomessa on laajoja luontoalueita, metsiä, jokia ja järviä sekä rauhallinen ympäristö.",
+      whyP2: "Omistus Suomessa on selkeä ja kiinteistökaupat voidaan hoitaa myös sähköisesti Maanmittauslaitoksen palvelussa.",
+      areasTitle: "Maa-alueita Lapissa ja Pohjois-Suomessa",
+      areasP1: "Kohteita on Lapissa ja Pohjois-Suomessa useissa kunnissa. Selaa kohteet kunnittain kartasta ja listasta.",
+      areasP2: "Monet kohteet ovat metsien, jokien ja järvien läheisyydessä rauhallisissa pohjoisen maisemissa.",
+      waterTitle: "Järviä ja jokia alueilla",
+      waterP1: "Useat kohteet sijaitsevat järvien, jokien ja vesistöjen läheisyydessä Lapissa ja Pohjois-Suomessa."
     },
     en: {
       title: "Properties by municipality",
       subtitle: "Search by municipality, property ID, or name. When opening the map, the ID is copied automatically.",
       searchPh: "Search: municipality (Inari) / ID (148-401...) / name (JUSSILA)",
       clear: "Clear",
-      aiNote: "Note: Some translations on this site are AI-assisted. For non-Finnish enquiries, written contact (email/message) is preferred to ensure accurate understanding.",
       disclaimer: "Map services may show boundaries/plots that do not fully reflect the current sales situation due to pending parceling processes or previously sold parts.",
       mapTitle: "Map",
       mapHint: "Click a municipality → open the list",
@@ -147,14 +247,22 @@
       noHits: "No results.",
       tryOther: "Try another search term.",
       footer: "© Nousukiito — Properties by municipality",
-      count: "items"
+      filterTitle: "Municipality filter",
+      filterNote: "(This list is based on published items. Ask about additional availability.)",
+      whyTitle: "Why buy land in Lapland & Northern Finland",
+      whyP1: "Northern Finland offers large natural areas, forests, rivers and lakes, with low population density and clean natural environments.",
+      whyP2: "Land ownership in Finland is secure and transparent, and transactions can be completed electronically through the Finnish Land Information System.",
+      areasTitle: "Land areas across Lapland & Northern Finland",
+      areasP1: "Available land areas are located across Finnish Lapland and Northern Finland. Browse properties by municipality using the map and list above.",
+      areasP2: "Many areas are located near forests, rivers and lakes in quiet northern wilderness landscapes.",
+      waterTitle: "Lakes and rivers in Lapland & Northern Finland",
+      waterP1: "Many land areas are located near lakes, rivers and natural waterways across Lapland and Northern Finland."
     },
     de: {
       title: "Grundstücke nach Gemeinde",
       subtitle: "Suche nach Gemeinde, Grundstücks-ID oder Name. Beim Öffnen der Karte wird die ID automatisch kopiert.",
       searchPh: "Suche: Gemeinde (Inari) / ID (148-401...) / Name (JUSSILA)",
       clear: "Leeren",
-      aiNote: "Hinweis: Einige Übersetzungen auf dieser Seite sind KI-gestützt. Für Anfragen in Fremdsprachen bevorzugen wir schriftliche Kontaktaufnahme (E-Mail/Nachricht), um Missverständnisse zu vermeiden.",
       disclaimer: "Kartendienste können Grenzen/Flurstücke anzeigen, die aufgrund laufender Teilungen oder früherer Verkäufe nicht vollständig dem aktuellen Verkaufsstand entsprechen.",
       mapTitle: "Karte",
       mapHint: "Gemeinde anklicken → Liste öffnen",
@@ -166,7 +274,16 @@
       noHits: "Keine Treffer.",
       tryOther: "Bitte einen anderen Suchbegriff versuchen.",
       footer: "© Nousukiito — Grundstücke nach Gemeinde",
-      count: "Stk."
+      filterTitle: "Gemeindefilter",
+      filterNote: "(Diese Liste basiert auf veröffentlichten Objekten. Bitte fragen Sie nach weiterer Verfügbarkeit.)",
+      whyTitle: "Warum Land in Lappland & Nordfinnland kaufen",
+      whyP1: "Nordfinnland bietet große Naturgebiete, Wälder, Flüsse und Seen, geringe Bevölkerungsdichte und eine saubere Umwelt.",
+      whyP2: "Der Grundstückserwerb in Finnland ist sicher und transparent, und Transaktionen können elektronisch über das finnische Grundbuchsystem abgewickelt werden.",
+      areasTitle: "Grundstücke in Lappland & Nordfinnland",
+      areasP1: "Verfügbare Flächen liegen in Lappland und Nordfinnland. Durchsuchen Sie Grundstücke nach Gemeinden über Karte und Liste oben.",
+      areasP2: "Viele Flächen liegen in ruhigen Naturlandschaften nahe Wäldern, Flüssen und Seen.",
+      waterTitle: "Seen und Flüsse in Lappland & Nordfinnland",
+      waterP1: "Viele Flächen liegen in der Nähe von Seen, Flüssen und Gewässern in Lappland und Nordfinnland."
     }
   };
 
@@ -177,8 +294,7 @@
   let clickableMunicipalities = new Set(); // from data.json
   const PAIKKATIETO_URL = "https://kartta.paikkatietoikkuna.fi/?lang=fi";
 
-  // We keep a small, built-in list of municipality centroids (only those you currently have).
-  // If later you add new municipalities, we can extend this list.
+  // Municipality centroids (extend as needed)
   const MUNICIPALITY_CENTERS = {
     "Enontekiö": [68.385, 23.633],
     "Ii": [65.317, 25.372],
@@ -259,12 +375,11 @@
     const grouped = groupByMunicipality(items);
     out.innerHTML = grouped.map(([kunta, list]) => {
       const sorted = [...list].sort((a,b) => (a.tunnus||"").localeCompare(b.tunnus||""));
-      const count = sorted.length;
 
       return `
         <div class="card" id="kunta-${escapeHtml(kunta)}">
           <details open>
-            <summary>${escapeHtml(kunta)}<span class="pill">${count} ${escapeHtml(I18N[LANG].count)}</span></summary>
+            <summary>${escapeHtml(kunta)}</summary>
             <ul>
               ${sorted.map(it => {
                 const t = it.tunnus || "";
@@ -309,37 +424,37 @@
     });
   }
 
-  function scrollToMunicipality(name) {
+  function scrollToMunicipality(name, doFilter=true) {
     const el = document.getElementById("kunta-" + name);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 
-    const qEl = document.getElementById("q");
-    qEl.value = name;
-    render(filter(name));
+    if (doFilter) {
+      const qEl = document.getElementById("q");
+      qEl.value = name;
+      render(filter(name));
+    }
   }
 
   function rebuildMapMarkers() {
     if (!map) return;
-
     if (muniLayer) muniLayer.remove();
 
     const markers = [];
     for (const name of [...clickableMunicipalities].sort((a,b)=>a.localeCompare(b,"fi"))) {
       const c = MUNICIPALITY_CENTERS[name];
-      if (!c) continue; // if missing, we just skip marker (we can add later)
+      if (!c) continue;
       const m = L.circleMarker(c, {
         radius: 7,
         weight: 2,
         opacity: 0.9,
         fillOpacity: 0.25
       }).bindTooltip(name, {direction:"top", offset:[0,-6]})
-        .on("click", () => scrollToMunicipality(name));
+        .on("click", () => scrollToMunicipality(name, true));
       markers.push(m);
     }
 
     muniLayer = L.layerGroup(markers).addTo(map);
 
-    // Fit bounds if we have markers
     if (markers.length) {
       const group = L.featureGroup(markers);
       map.fitBounds(group.getBounds().pad(0.25));
@@ -359,26 +474,86 @@
     rebuildMapMarkers();
   }
 
+  // --- municipality quick filter (no counts) ---
+  let activeMunicipality = "";
+
+  function setActiveFilterButton(name) {
+    const buttons = document.querySelectorAll("#municipalityFilter .filterbtn");
+    buttons.forEach(b => b.classList.toggle("active", b.dataset.muni === name));
+  }
+
+  function buildMunicipalityFilter() {
+    const container = document.getElementById("municipalityFilter");
+    container.innerHTML = "";
+
+    const municipalities = [...new Set(data.map(x => (x.kunta||"").trim()).filter(Boolean))]
+      .sort((a,b)=>a.localeCompare(b,"fi"));
+
+    const makeBtn = (label, muni) => {
+      const btn = document.createElement("button");
+      btn.className = "filterbtn";
+      btn.textContent = label;
+      btn.dataset.muni = muni;
+      btn.onclick = () => {
+        activeMunicipality = muni;
+        setActiveFilterButton(muni);
+
+        const qEl = document.getElementById("q");
+
+        if (!muni) {
+          qEl.value = "";
+          render(data);
+          // reset map view nicely
+          rebuildMapMarkers();
+          return;
+        }
+
+        qEl.value = muni;
+        render(filter(muni));
+        scrollToMunicipality(muni, false); // we already filtered via render above
+      };
+      return btn;
+    };
+
+    container.appendChild(makeBtn("All", ""));
+    municipalities.forEach(m => container.appendChild(makeBtn(m, m)));
+
+    setActiveFilterButton(activeMunicipality);
+  }
+
   function applyLang() {
     document.getElementById("title").textContent = I18N[LANG].title;
     document.getElementById("subtitle").textContent = I18N[LANG].subtitle;
     document.getElementById("q").placeholder = I18N[LANG].searchPh;
     document.getElementById("clear").textContent = I18N[LANG].clear;
-    document.getElementById("aiNote").textContent = I18N[LANG].aiNote;
     document.getElementById("disclaimer").textContent = I18N[LANG].disclaimer;
     document.getElementById("footerText").textContent = I18N[LANG].footer;
     document.getElementById("mapTitle").textContent = I18N[LANG].mapTitle;
     document.getElementById("mapHint").textContent = I18N[LANG].mapHint;
     document.getElementById("mapNote").textContent = I18N[LANG].mapNote;
 
+    document.getElementById("filterTitle").textContent = I18N[LANG].filterTitle;
+    document.getElementById("filterNote").textContent = I18N[LANG].filterNote;
+
+    document.getElementById("whyTitle").textContent = I18N[LANG].whyTitle;
+    document.getElementById("whyP1").textContent = I18N[LANG].whyP1;
+    document.getElementById("whyP2").textContent = I18N[LANG].whyP2;
+
+    document.getElementById("areasTitle").textContent = I18N[LANG].areasTitle;
+    document.getElementById("areasP1").textContent = I18N[LANG].areasP1;
+    document.getElementById("areasP2").textContent = I18N[LANG].areasP2;
+
+    document.getElementById("waterTitle").textContent = I18N[LANG].waterTitle;
+    document.getElementById("waterP1").textContent = I18N[LANG].waterP1;
+
     document.getElementById("btn-fi").classList.toggle("active", LANG === "fi");
     document.getElementById("btn-en").classList.toggle("active", LANG === "en");
     document.getElementById("btn-de").classList.toggle("active", LANG === "de");
 
-    
-  // Show translation note only for non-Finnish
-document.getElementById("aiNote").style.display = (LANG === "fi") ? "none" : "block";  
-  render(filter(document.getElementById("q").value));
+    // Show translation note only for non-Finnish
+    document.getElementById("aiNote").style.display = (LANG === "fi") ? "none" : "block";
+
+    render(filter(document.getElementById("q").value));
   }
 
   function setLang(l) { LANG = l; applyLang(); }
@@ -387,27 +562,29 @@ document.getElementById("aiNote").style.display = (LANG === "fi") ? "none" : "bl
     const res = await fetch("./data.json", { cache: "no-store" });
     data = await res.json();
 
-    // build clickable municipality set from data.json
     clickableMunicipalities = new Set(
       data.map(x => (x.kunta || "").trim()).filter(Boolean)
     );
 
-    // Initial render
     render(data);
 
-    // Search
     const qEl = document.getElementById("q");
-    qEl.addEventListener("input", () => render(filter(qEl.value)));
+    qEl.addEventListener("input", () => {
+      activeMunicipality = "";
+      setActiveFilterButton("");
+      render(filter(qEl.value));
+    });
+
     document.getElementById("clear").addEventListener("click", () => {
       qEl.value = "";
+      activeMunicipality = "";
+      setActiveFilterButton("");
       render(data);
       qEl.focus();
     });
 
-    // Map
     initMap();
-
-    // Texts
+    buildMunicipalityFilter();
     applyLang();
   }
 
