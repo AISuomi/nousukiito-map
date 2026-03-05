@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<title>Nousukiito – Kunnat ja kiinteistöt</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{font-family:Arial;margin:40px;background:#f5f5f5}
+h1{margin-bottom:20px}
+.card{background:white;padding:20px;border-radius:10px;margin-bottom:15px}
+a{color:#0066cc;text-decoration:none}
+</style>
+</head>
+
+<body>
+
+<h1>Nousukiito – kiinteistöt kunnittain</h1>
+
+<div id="content"></div>
+
+<script>
+fetch("data.json")
+.then(r=>r.json())
+.then(data=>{
+
+let kunnat={}
+
+data.forEach(i=>{
+ if(!kunnat[i.kunta]) kunnat[i.kunta]=[]
+ kunnat[i.kunta].push(i)
+})
+
+let html=""
+
+Object.keys(kunnat).sort().forEach(kunta=>{
+
+ html+=`<div class="card"><h2>${kunta}</h2>`
+
+ kunnat[kunta].forEach(k=>{
+
+ html+=`
+ <div>
+ ${k.tunnus} ${k.nimi ? "– "+k.nimi : ""}
+ <br>
+ <a href="#" onclick="openMap('${k.tunnus}')">Avaa kartassa</a>
+ </div>
+ <br>
+ `
+
+ })
+
+ html+="</div>"
+
+})
+
+document.getElementById("content").innerHTML=html
+
+})
+
+function openMap(t){
+navigator.clipboard.writeText(t)
+window.open("https://kartta.paikkatietoikkuna.fi/?lang=fi","_blank")
+alert("Kiinteistötunnus kopioitu: "+t)
+}
+</script>
+
+</body>
+</html>
