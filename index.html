@@ -51,4 +51,255 @@
 <body>
 
 <header>
-  <div cla
+  <div class="topbar">
+    <h1 id="title">Kiinteistöt kunnittain</h1>
+    <div class="langs" aria-label="Language">
+      <button class="langbtn active" id="btn-fi" onclick="setLang('fi')">FI</button>
+      <button class="langbtn" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="langbtn" id="btn-de" onclick="setLang('de')">DE</button>
+    </div>
+  </div>
+
+  <p class="sub" id="subtitle">
+    Etsi kunta, kiinteistötunnus tai nimi. Avatessa kartan tunnus kopioituu valmiiksi.
+  </p>
+</header>
+
+<div class="wrap">
+
+  <div class="card">
+    <div class="row">
+      <input id="q" placeholder="Hae: kunta (Inari) / tunnus (148-401...) / nimi (JUSSILA)" />
+      <button id="clear">Tyhjennä</button>
+    </div>
+
+    <p class="muted note" id="aiNote" style="margin:12px 0 0;">
+      Huom: Osalla sivuista käännös on luotu tekoälyavusteisesti. Ulkomaankieliset yhteydenotot mieluiten kirjallisena (sähköposti/viesti), jotta voimme varmistaa oikean tulkinnan.
+    </p>
+
+    <p class="muted" id="disclaimer" style="margin:10px 0 0;">
+      Karttapalveluissa näkyvät kiinteistörajat/palstat eivät aina vastaa ajantasaista myyntitilannetta, koska lohkomisia voi olla kesken tai osia voi olla myyty aiemmin.
+    </p>
+  </div>
+
+  <div id="out"></div>
+</div>
+
+<footer id="footerText">
+  © Nousukiito — Kiinteistötunnukset kunnittain
+</footer>
+
+<script>
+  // --- Language strings ---
+  const I18N = {
+    fi: {
+      title: "Kiinteistöt kunnittain",
+      subtitle: "Etsi kunta, kiinteistötunnus tai nimi. Avatessa kartan tunnus kopioituu valmiiksi.",
+      searchPh: "Hae: kunta (Inari) / tunnus (148-401...) / nimi (JUSSILA)",
+      clear: "Tyhjennä",
+      aiNote: "Huom: Osalla sivuista käännös on luotu tekoälyavusteisesti. Ulkomaankieliset yhteydenotot mieluiten kirjallisena (sähköposti/viesti), jotta voimme varmistaa oikean tulkinnan.",
+      disclaimer: "Karttapalveluissa näkyvät kiinteistörajat/palstat eivät aina vastaa ajantasaista myyntitilannetta, koska lohkomisia voi olla kesken tai osia voi olla myyty aiemmin.",
+      openMap: "Avaa kartassa",
+      copyId: "Kopioi tunnus",
+      copied: "Kiinteistötunnus kopioitu: ",
+      pasteHint: "Liitä se Paikkatietoikkunan hakuun (Ctrl+V).",
+      noHits: "Ei osumia.",
+      tryOther: "Kokeile toista hakusanaa.",
+      footer: "© Nousukiito — Kiinteistötunnukset kunnittain",
+      count: "kpl"
+    },
+    en: {
+      title: "Properties by municipality",
+      subtitle: "Search by municipality, property ID, or name. When opening the map, the ID is copied automatically.",
+      searchPh: "Search: municipality (Inari) / ID (148-401...) / name (JUSSILA)",
+      clear: "Clear",
+      aiNote: "Note: Some translations on this site are AI-assisted. For non-Finnish enquiries, written contact (email/message) is preferred to ensure accurate understanding.",
+      disclaimer: "Map services may show boundaries/plots that do not fully reflect the current sales situation due to pending parceling processes or previously sold parts.",
+      openMap: "Open map",
+      copyId: "Copy ID",
+      copied: "Property ID copied: ",
+      pasteHint: "Paste it into the Paikkatietoikkuna search (Ctrl+V).",
+      noHits: "No results.",
+      tryOther: "Try another search term.",
+      footer: "© Nousukiito — Properties by municipality",
+      count: "items"
+    },
+    de: {
+      title: "Grundstücke nach Gemeinde",
+      subtitle: "Suche nach Gemeinde, Grundstücks-ID oder Name. Beim Öffnen der Karte wird die ID automatisch kopiert.",
+      searchPh: "Suche: Gemeinde (Inari) / ID (148-401...) / Name (JUSSILA)",
+      clear: "Leeren",
+      aiNote: "Hinweis: Einige Übersetzungen auf dieser Seite sind KI-gestützt. Für Anfragen in Fremdsprachen bevorzugen wir schriftliche Kontaktaufnahme (E-Mail/Nachricht), um Missverständnisse zu vermeiden.",
+      disclaimer: "Kartendienste können Grenzen/Flurstücke anzeigen, die aufgrund laufender Teilungen oder früherer Verkäufe nicht vollständig dem aktuellen Verkaufsstand entsprechen.",
+      openMap: "Karte öffnen",
+      copyId: "ID kopieren",
+      copied: "Grundstücks-ID kopiert: ",
+      pasteHint: "Füge sie in die Suche von Paikkatietoikkuna ein (Strg+V).",
+      noHits: "Keine Treffer.",
+      tryOther: "Bitte einen anderen Suchbegriff versuchen.",
+      footer: "© Nousukiito — Grundstücke nach Gemeinde",
+      count: "Stk."
+    }
+  };
+
+  let LANG = "fi";
+
+  // --- Map opening ---
+  const PAIKKATIETO_URL = "https://kartta.paikkatietoikkuna.fi/?lang=fi";
+
+  async function copyToClipboard(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function openPaikkatietoWithCopy(tunnus) {
+    const ok = await copyToClipboard(tunnus);
+    window.open(PAIKKATIETO_URL, "_blank", "noopener");
+    if (ok) {
+      alert(I18N[LANG].copied + tunnus + "\n" + I18N[LANG].pasteHint);
+    } else {
+      prompt(I18N[LANG].copyId + ":", tunnus);
+    }
+  }
+
+  async function justCopy(tunnus) {
+    const ok = await copyToClipboard(tunnus);
+    if (ok) alert(I18N[LANG].copied + tunnus);
+    else prompt(I18N[LANG].copyId + ":", tunnus);
+  }
+
+  // --- Data & rendering ---
+  let data = [];
+
+  function groupByMunicipality(items) {
+    const m = new Map();
+    for (const it of items) {
+      const key = (it.kunta || "Tuntematon").trim();
+      if (!m.has(key)) m.set(key, []);
+      m.get(key).push(it);
+    }
+    return [...m.entries()].sort((a,b) => a[0].localeCompare(b[0], "fi"));
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replaceAll("&","&amp;").replaceAll("<","&lt;")
+      .replaceAll(">","&gt;").replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function render(items) {
+    const out = document.getElementById("out");
+    if (!items.length) {
+      out.innerHTML = `
+        <div class="card">
+          <b>${escapeHtml(I18N[LANG].noHits)}</b>
+          <div class="muted" style="margin-top:8px;">${escapeHtml(I18N[LANG].tryOther)}</div>
+        </div>`;
+      return;
+    }
+
+    const grouped = groupByMunicipality(items);
+
+    out.innerHTML = grouped.map(([kunta, list]) => {
+      const sorted = [...list].sort((a,b) => (a.tunnus||"").localeCompare(b.tunnus||""));
+      const count = sorted.length;
+
+      return `
+        <div class="card" id="kunta-${escapeHtml(kunta)}">
+          <details open>
+            <summary>${escapeHtml(kunta)}<span class="pill">${count} ${escapeHtml(I18N[LANG].count)}</span></summary>
+            <ul>
+              ${sorted.map(it => {
+                const t = it.tunnus || "";
+                const nimi = (it.nimi || "").trim();
+                const laji = (it.laji || "").trim();
+                const huom = (it.huom || "").trim();
+
+                return `
+                  <li>
+                    <b>${escapeHtml(t)}</b>
+                    ${nimi ? `<span class="small"> — ${escapeHtml(nimi)}</span>` : ""}
+                    ${laji ? `<span class="pill">${escapeHtml(laji)}</span>` : ""}
+                    ${huom ? `<div class="muted">Huom: ${escapeHtml(huom)}</div>` : ""}
+                    <div class="actions">
+                      <a class="actlink" href="#" onclick="openPaikkatietoWithCopy('${escapeHtml(t)}'); return false;">
+                        ${escapeHtml(I18N[LANG].openMap)}
+                      </a>
+                      <a class="actlink" href="#" onclick="justCopy('${escapeHtml(t)}'); return false;">
+                        ${escapeHtml(I18N[LANG].copyId)}
+                      </a>
+                    </div>
+                  </li>
+                `;
+              }).join("")}
+            </ul>
+          </details>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function filter(q) {
+    q = (q || "").trim().toLowerCase();
+    if (!q) return data;
+
+    return data.filter(it => {
+      const k = (it.kunta || "").toLowerCase();
+      const t = (it.tunnus || "").toLowerCase();
+      const n = (it.nimi || "").toLowerCase();
+      const h = (it.huom || "").toLowerCase();
+      const l = (it.laji || "").toLowerCase();
+      return k.includes(q) || t.includes(q) || n.includes(q) || h.includes(q) || l.includes(q);
+    });
+  }
+
+  function applyLang() {
+    document.getElementById("title").textContent = I18N[LANG].title;
+    document.getElementById("subtitle").textContent = I18N[LANG].subtitle;
+    document.getElementById("q").placeholder = I18N[LANG].searchPh;
+    document.getElementById("clear").textContent = I18N[LANG].clear;
+    document.getElementById("aiNote").textContent = I18N[LANG].aiNote;
+    document.getElementById("disclaimer").textContent = I18N[LANG].disclaimer;
+    document.getElementById("footerText").textContent = I18N[LANG].footer;
+
+    document.getElementById("btn-fi").classList.toggle("active", LANG === "fi");
+    document.getElementById("btn-en").classList.toggle("active", LANG === "en");
+    document.getElementById("btn-de").classList.toggle("active", LANG === "de");
+
+    // Re-render to update button labels
+    render(filter(document.getElementById("q").value));
+  }
+
+  function setLang(l) {
+    LANG = l;
+    applyLang();
+  }
+
+  async function init() {
+    const res = await fetch("./data.json", { cache: "no-store" });
+    data = await res.json();
+
+    // initial render
+    render(data);
+
+    const qEl = document.getElementById("q");
+    qEl.addEventListener("input", () => render(filter(qEl.value)));
+
+    document.getElementById("clear").addEventListener("click", () => {
+      qEl.value = "";
+      render(data);
+      qEl.focus();
+    });
+
+    applyLang();
+  }
+
+  init();
+</script>
+</body>
+</html>
