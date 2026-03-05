@@ -6,7 +6,7 @@
 
   <!-- SEO -->
   <title>Land for sale in Lapland & Northern Finland | Nousukiito</title>
-  <meta name="description" content="Land for sale in Lapland & Northern Finland. Browse properties by municipality on map. Forest land, rural land and areas near lakes and rivers. Contact: myynti@nousukiito.net" />
+  <meta name="description" content="Land for sale in Lapland & Northern Finland. Browse properties by municipality on a map. Forest land, rural land and areas near lakes and rivers. Contact: myynti@nousukiito.net" />
   <meta name="keywords" content="land for sale lapland, land for sale northern finland, land for sale finland, forest land finland, lakeside land finland, rural land finland, land plots lapland, kuusamo land, salla land, inari land" />
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -73,6 +73,8 @@
     }
     .filterbtn:hover { filter: brightness(.98); }
     .filterbtn.active { border-color: rgba(0,0,0,.42); }
+
+    h2 { font-size: 18px; margin: 0 0 10px; }
   </style>
 </head>
 
@@ -98,6 +100,14 @@
     <div class="maphead">
       <b id="mapTitle">Kartta</b>
       <span class="small" id="mapHint">Klikkaa kuntaa → listaus avautuu</span>
+    </div>
+
+    <div class="muted" id="mapGuide" style="margin:10px 0 0;">
+      <ul style="margin:8px 0 0; padding-left:18px;">
+        <li id="mg1">Klikkaa kuntaa kartalla → listaus suodattuu</li>
+        <li id="mg2">Avaa kohde “Avaa kartassa” → kiinteistötunnus kopioituu</li>
+        <li id="mg3">Lähetä ostotoive sähköpostilla (mallipohja)</li>
+      </ul>
     </div>
 
     <div id="map"></div>
@@ -130,7 +140,8 @@
     </p>
 
     <p class="muted" style="margin:10px 0 0;">
-      <b>Contact:</b> <a href="mailto:myynti@nousukiito.net">myynti@nousukiito.net</a>
+      <b id="contactLabel">Yhteys:</b>
+      <a id="emailLink" href="#">myynti@nousukiito.net</a>
       &nbsp;•&nbsp;
       <a href="https://www.youtube.com/channel/UCuaBkujERCrplur9Oe8nZUw/videos" target="_blank" rel="noopener">Videos (YouTube)</a>
     </p>
@@ -138,41 +149,43 @@
 
   <div id="out"></div>
 
-  <!-- SEO / info sections -->
-  <div class="card">
-    <h2 style="margin:0 0 10px;" id="whyTitle">Why buy land in Lapland & Northern Finland</h2>
-    <p class="muted" id="whyP1" style="margin:0 0 10px;">
-      Northern Finland offers large natural areas, forests, rivers and lakes, with low population density and clean natural environments.
-    </p>
-    <p class="muted" id="whyP2" style="margin:0;">
-      Land ownership in Finland is secure and transparent, and property transactions can be completed electronically through the Finnish Land Information System.
-    </p>
+  <!-- EN/DE info cards (hidden on FI) -->
+  <div id="seoCards">
+    <div class="card">
+      <h2 id="whyTitle">Why buy land in Lapland & Northern Finland</h2>
+      <p class="muted" id="whyP1" style="margin:0 0 10px;">
+        Northern Finland offers large natural areas, forests, rivers and lakes, with low population density and clean natural environments.
+      </p>
+      <p class="muted" id="whyP2" style="margin:0;">
+        Land ownership in Finland is secure and transparent, and property transactions can be completed electronically through the Finnish Land Information System.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2 id="areasTitle">Land areas across Lapland & Northern Finland</h2>
+      <p class="muted" id="areasP1" style="margin:0 0 10px;">
+        Available land areas are located across Finnish Lapland and Northern Finland. Browse properties by municipality using the map and list above.
+      </p>
+      <p class="muted" id="areasP2" style="margin:0;">
+        Many areas are located near forests, rivers and lakes in quiet northern wilderness landscapes.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2 id="waterTitle">Lakes and rivers in Lapland & Northern Finland</h2>
+      <p class="muted" id="waterP1" style="margin:0 0 10px;">
+        Many land areas are located near lakes, rivers and natural waterways across Lapland and Northern Finland.
+      </p>
+      <p class="muted" id="waterList" style="margin:0;">
+        Muonionjoki, Lätäseno, Tarvantojoki, Kitkajoki, Oulankajoki, Kuusinkijoki, Jeesiöjoki, Kemijoki, Kitinen, Raudanjoki, Kelottijärvi, Vakkojärvi, Äkäsjärvi, Hirvasjärvi, Pahtajärvi, Kiutajärvi, Karhujärvi, Iijärvi, Suovajärvi, Livojärvi, Irnijärvi, Polojärvi, Julma-Ölkky, Ala-Ölkky, Kuoliojoki, Vääräjärvi, Kuntijärvi, Ropakkojärvi, Kemijärvi, Menesjärvi.
+      </p>
+      <p class="muted" style="margin:10px 0 0;">
+        <a href="https://www.youtube.com/channel/UCuaBkujERCrplur9Oe8nZUw/videos" target="_blank" rel="noopener">Videos of land areas and natural environments</a>
+      </p>
+    </div>
   </div>
 
-  <div class="card">
-    <h2 style="margin:0 0 10px;" id="areasTitle">Land areas across Lapland & Northern Finland</h2>
-    <p class="muted" id="areasP1" style="margin:0 0 10px;">
-      Available land areas are located across Finnish Lapland and Northern Finland. Browse properties by municipality using the map and list above.
-    </p>
-    <p class="muted" id="areasP2" style="margin:0;">
-      Many areas are located near forests, rivers and lakes in quiet northern wilderness landscapes.
-    </p>
-  </div>
-
-  <div class="card">
-    <h2 style="margin:0 0 10px;" id="waterTitle">Lakes and rivers in Lapland & Northern Finland</h2>
-    <p class="muted" id="waterP1" style="margin:0 0 10px;">
-      Many land areas are located near lakes, rivers and natural waterways across Lapland and Northern Finland.
-    </p>
-    <p class="muted" id="waterList" style="margin:0;">
-      Muonionjoki, Lätäseno, Tarvantojoki, Kitkajoki, Oulankajoki, Kuusinkijoki, Jeesiöjoki, Kemijoki, Kitinen, Raudanjoki, Kelottijärvi, Vakkojärvi, Äkäsjärvi, Hirvasjärvi, Pahtajärvi, Kiutajärvi, Karhujärvi, Iijärvi, Suovajärvi, Livojärvi, Irnijärvi, Polojärvi, Julma-Ölkky, Ala-Ölkky, Kuoliojoki, Vääräjärvi, Kuntijärvi, Ropakkojärvi, Kemijärvi, Menesjärvi.
-    </p>
-    <p class="muted" style="margin:10px 0 0;">
-      <a href="https://www.youtube.com/channel/UCuaBkujERCrplur9Oe8nZUw/videos" target="_blank" rel="noopener">Videos of land areas and natural environments</a>
-    </p>
-  </div>
-
-  <!-- Hidden SEO block (does not change layout) -->
+  <!-- Hidden SEO block -->
   <div style="display:none" id="seoHidden">
     Land for sale Lapland Finland
     Land for sale Northern Finland
@@ -201,6 +214,17 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+  const EMAIL_TEMPLATE = "mailto:myynti@nousukiito.net" +
+    "?subject=Land%20request%20/%20Ostotoive" +
+    "&body=" +
+    "Property%20ID%20(optional):%0A%0A" +
+    "Location%20/%20Paikkakunta:%0A%0A" +
+    "Size%20/%20Pinta-ala:%0A%0A" +
+    "Intended%20use%20/%20K%C3%A4ytt%C3%B6tarkoitus:%0A%0A" +
+    "Waterfront%20interest%20(lake/river):%0A%0A" +
+    "Budget%20range%20/%20Hintahaarukka:%0A%0A" +
+    "Must%20be%20criteria:%0A";
+
   // --- i18n ---
   const I18N = {
     fi: {
@@ -212,6 +236,8 @@
       mapTitle: "Kartta",
       mapHint: "Klikkaa kuntaa → listaus avautuu",
       mapNote: "Kartta on yleiskuva: klikkaa kuntaa ja selaa kohteet. Kiinteistörajoja ei näytetä (lohkomisia voi olla kesken).",
+      filterTitle: "Kuntasuodatin",
+      filterNote: "(Listaus perustuu julkaistuihin kohteisiin. Kysy myös muista kokonaisuuksista.)",
       openMap: "Avaa kartassa",
       copyId: "Kopioi tunnus",
       copied: "Kiinteistötunnus kopioitu: ",
@@ -219,17 +245,10 @@
       noHits: "Ei osumia.",
       tryOther: "Kokeile toista hakusanaa.",
       footer: "© Nousukiito — Kiinteistötunnukset kunnittain",
-      filterTitle: "Kuntasuodatin",
-      filterNote: "(Listaus perustuu julkaistuihin kohteisiin. Kysy myös muista kokonaisuuksista.)",
-      contactLabel: "Yhteys",
-      whyTitle: "Miksi maa-alue Pohjois-Suomesta?",
-      whyP1: "Pohjois-Suomessa on laajoja luontoalueita, metsiä, jokia ja järviä sekä rauhallinen ympäristö.",
-      whyP2: "Omistus Suomessa on selkeä ja kiinteistökaupat voidaan hoitaa myös sähköisesti Maanmittauslaitoksen palvelussa.",
-      areasTitle: "Maa-alueita Lapissa ja Pohjois-Suomessa",
-      areasP1: "Kohteita on Lapissa ja Pohjois-Suomessa useissa kunnissa. Selaa kohteet kunnittain kartasta ja listasta.",
-      areasP2: "Monet kohteet ovat metsien, jokien ja järvien läheisyydessä rauhallisissa pohjoisen maisemissa.",
-      waterTitle: "Järviä ja jokia alueilla",
-      waterP1: "Useat kohteet sijaitsevat järvien, jokien ja vesistöjen läheisyydessä Lapissa ja Pohjois-Suomessa."
+      contactLabel: "Yhteys:",
+      mg1: "Klikkaa kuntaa kartalla → listaus suodattuu",
+      mg2: "Avaa kohde “Avaa kartassa” → kiinteistötunnus kopioituu",
+      mg3: "Lähetä ostotoive sähköpostilla (mallipohja)"
     },
     en: {
       title: "Properties by municipality",
@@ -240,6 +259,8 @@
       mapTitle: "Map",
       mapHint: "Click a municipality → open the list",
       mapNote: "Overview map: click a municipality to view the listings. Property boundaries are not shown (parceling may be in progress).",
+      filterTitle: "Municipality filter",
+      filterNote: "(This list is based on published items. Ask about additional availability.)",
       openMap: "Open map",
       copyId: "Copy ID",
       copied: "Property ID copied: ",
@@ -247,16 +268,10 @@
       noHits: "No results.",
       tryOther: "Try another search term.",
       footer: "© Nousukiito — Properties by municipality",
-      filterTitle: "Municipality filter",
-      filterNote: "(This list is based on published items. Ask about additional availability.)",
-      whyTitle: "Why buy land in Lapland & Northern Finland",
-      whyP1: "Northern Finland offers large natural areas, forests, rivers and lakes, with low population density and clean natural environments.",
-      whyP2: "Land ownership in Finland is secure and transparent, and transactions can be completed electronically through the Finnish Land Information System.",
-      areasTitle: "Land areas across Lapland & Northern Finland",
-      areasP1: "Available land areas are located across Finnish Lapland and Northern Finland. Browse properties by municipality using the map and list above.",
-      areasP2: "Many areas are located near forests, rivers and lakes in quiet northern wilderness landscapes.",
-      waterTitle: "Lakes and rivers in Lapland & Northern Finland",
-      waterP1: "Many land areas are located near lakes, rivers and natural waterways across Lapland and Northern Finland."
+      contactLabel: "Contact:",
+      mg1: "Click a municipality on the map → the list is filtered",
+      mg2: "Open an item → the property ID is copied",
+      mg3: "Send your request by email (template link)"
     },
     de: {
       title: "Grundstücke nach Gemeinde",
@@ -267,6 +282,8 @@
       mapTitle: "Karte",
       mapHint: "Gemeinde anklicken → Liste öffnen",
       mapNote: "Übersichtskarte: Gemeinde anklicken, um die Liste zu öffnen. Grundstücksgrenzen werden nicht angezeigt (Teilungen können in Arbeit sein).",
+      filterTitle: "Gemeindefilter",
+      filterNote: "(Diese Liste basiert auf veröffentlichten Objekten. Bitte fragen Sie nach weiterer Verfügbarkeit.)",
       openMap: "Karte öffnen",
       copyId: "ID kopieren",
       copied: "Grundstücks-ID kopiert: ",
@@ -274,16 +291,10 @@
       noHits: "Keine Treffer.",
       tryOther: "Bitte einen anderen Suchbegriff versuchen.",
       footer: "© Nousukiito — Grundstücke nach Gemeinde",
-      filterTitle: "Gemeindefilter",
-      filterNote: "(Diese Liste basiert auf veröffentlichten Objekten. Bitte fragen Sie nach weiterer Verfügbarkeit.)",
-      whyTitle: "Warum Land in Lappland & Nordfinnland kaufen",
-      whyP1: "Nordfinnland bietet große Naturgebiete, Wälder, Flüsse und Seen, geringe Bevölkerungsdichte und eine saubere Umwelt.",
-      whyP2: "Der Grundstückserwerb in Finnland ist sicher und transparent, und Transaktionen können elektronisch über das finnische Grundbuchsystem abgewickelt werden.",
-      areasTitle: "Grundstücke in Lappland & Nordfinnland",
-      areasP1: "Verfügbare Flächen liegen in Lappland und Nordfinnland. Durchsuchen Sie Grundstücke nach Gemeinden über Karte und Liste oben.",
-      areasP2: "Viele Flächen liegen in ruhigen Naturlandschaften nahe Wäldern, Flüssen und Seen.",
-      waterTitle: "Seen und Flüsse in Lappland & Nordfinnland",
-      waterP1: "Viele Flächen liegen in der Nähe von Seen, Flüssen und Gewässern in Lappland und Nordfinnland."
+      contactLabel: "Kontakt:",
+      mg1: "Gemeinde auf der Karte anklicken → Liste wird gefiltert",
+      mg2: "Objekt öffnen → Grundstücks-ID wird kopiert",
+      mg3: "Anfrage per E-Mail senden (Vorlage-Link)"
     }
   };
 
@@ -291,10 +302,9 @@
 
   // --- map ---
   let map, muniLayer;
-  let clickableMunicipalities = new Set(); // from data.json
+  let clickableMunicipalities = new Set();
   const PAIKKATIETO_URL = "https://kartta.paikkatietoikkuna.fi/?lang=fi";
 
-  // Municipality centroids (extend as needed)
   const MUNICIPALITY_CENTERS = {
     "Enontekiö": [68.385, 23.633],
     "Ii": [65.317, 25.372],
@@ -338,8 +348,11 @@
   async function openPaikkatietoWithCopy(tunnus) {
     const ok = await copyToClipboard(tunnus);
     window.open(PAIKKATIETO_URL, "_blank", "noopener");
-    if (ok) alert(I18N[LANG].copied + tunnus + "\n" + I18N[LANG].pasteHint);
-    else prompt(I18N[LANG].copyId + ":", tunnus);
+    if (ok) {
+      alert(I18N[LANG].copied + tunnus + "\n\n" + I18N[LANG].pasteHint);
+    } else {
+      prompt(I18N[LANG].copyId + ":", tunnus);
+    }
   }
 
   async function justCopy(tunnus) {
@@ -474,7 +487,7 @@
     rebuildMapMarkers();
   }
 
-  // --- municipality quick filter (no counts) ---
+  // municipality quick filter (no counts)
   let activeMunicipality = "";
 
   function setActiveFilterButton(name) {
@@ -503,18 +516,18 @@
         if (!muni) {
           qEl.value = "";
           render(data);
-          // reset map view nicely
           rebuildMapMarkers();
           return;
         }
 
         qEl.value = muni;
         render(filter(muni));
-        scrollToMunicipality(muni, false); // we already filtered via render above
+        scrollToMunicipality(muni, false);
       };
       return btn;
     };
 
+    // Button label "All" stays as-is (neutral)
     container.appendChild(makeBtn("All", ""));
     municipalities.forEach(m => container.appendChild(makeBtn(m, m)));
 
@@ -531,20 +544,13 @@
     document.getElementById("mapTitle").textContent = I18N[LANG].mapTitle;
     document.getElementById("mapHint").textContent = I18N[LANG].mapHint;
     document.getElementById("mapNote").textContent = I18N[LANG].mapNote;
-
     document.getElementById("filterTitle").textContent = I18N[LANG].filterTitle;
     document.getElementById("filterNote").textContent = I18N[LANG].filterNote;
+    document.getElementById("contactLabel").textContent = I18N[LANG].contactLabel;
 
-    document.getElementById("whyTitle").textContent = I18N[LANG].whyTitle;
-    document.getElementById("whyP1").textContent = I18N[LANG].whyP1;
-    document.getElementById("whyP2").textContent = I18N[LANG].whyP2;
-
-    document.getElementById("areasTitle").textContent = I18N[LANG].areasTitle;
-    document.getElementById("areasP1").textContent = I18N[LANG].areasP1;
-    document.getElementById("areasP2").textContent = I18N[LANG].areasP2;
-
-    document.getElementById("waterTitle").textContent = I18N[LANG].waterTitle;
-    document.getElementById("waterP1").textContent = I18N[LANG].waterP1;
+    document.getElementById("mg1").textContent = I18N[LANG].mg1;
+    document.getElementById("mg2").textContent = I18N[LANG].mg2;
+    document.getElementById("mg3").textContent = I18N[LANG].mg3;
 
     document.getElementById("btn-fi").classList.toggle("active", LANG === "fi");
     document.getElementById("btn-en").classList.toggle("active", LANG === "en");
@@ -553,12 +559,19 @@
     // Show translation note only for non-Finnish
     document.getElementById("aiNote").style.display = (LANG === "fi") ? "none" : "block";
 
+    // Hide EN/DE SEO cards on Finnish
+    document.getElementById("seoCards").style.display = (LANG === "fi") ? "none" : "block";
+
     render(filter(document.getElementById("q").value));
   }
 
   function setLang(l) { LANG = l; applyLang(); }
 
   async function init() {
+    // email link template
+    const emailEl = document.getElementById("emailLink");
+    emailEl.href = EMAIL_TEMPLATE;
+
     const res = await fetch("./data.json", { cache: "no-store" });
     data = await res.json();
 
