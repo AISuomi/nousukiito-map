@@ -4,6 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Nousukiito – Kiinteistöt kunnittain</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
   <style>
     :root { --b: rgba(0,0,0,.12); --b2: rgba(0,0,0,.18); --mut: rgba(0,0,0,.72); }
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin:0; background:#fafafa; }
@@ -13,10 +16,11 @@
     .langs { display:flex; gap:8px; }
     .langbtn {
       border:1px solid var(--b2); background:#fff; border-radius:999px; padding:8px 10px;
-      cursor:pointer; font-weight:650; font-size:13px;
+      cursor:pointer; font-weight:750; font-size:13px;
     }
-    .langbtn.active { border-color: rgba(0,0,0,.38); }
+    .langbtn.active { border-color: rgba(0,0,0,.42); }
     .sub { margin:10px 0 0; color: var(--mut); line-height:1.45; }
+
     .wrap { max-width:1120px; margin:0 auto; padding: 12px 18px 40px; }
     .card { background:#fff; border:1px solid var(--b); border-radius: 16px; padding: 16px; margin: 12px 0; }
     .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
@@ -27,11 +31,12 @@
     }
     button {
       padding: 12px 14px; border-radius: 12px; border:1px solid var(--b2);
-      background:#fff; cursor:pointer; font-weight:650;
+      background:#fff; cursor:pointer; font-weight:750;
     }
     button:hover { filter: brightness(.98); }
+
     details { border-top:1px solid rgba(0,0,0,.08); padding-top: 10px; }
-    summary { cursor:pointer; font-weight: 750; }
+    summary { cursor:pointer; font-weight: 800; }
     ul { margin: 10px 0 0; padding-left: 18px; }
     li { margin: 10px 0; }
     .pill {
@@ -43,13 +48,17 @@
     a { text-decoration:none; }
     a:hover { text-decoration:underline; }
     .actions { margin-top: 6px; display:flex; gap:12px; flex-wrap:wrap; }
-    .actlink { font-weight:650; }
+    .actlink { font-weight:750; }
+
     footer { max-width:1120px; margin:0 auto; padding: 16px 18px 30px; color: var(--mut); font-size: 13px; }
     .note { border-left: 4px solid rgba(0,0,0,.15); padding-left: 12px; }
+
+    #map { height: 420px; border-radius: 14px; overflow:hidden; margin-top:12px; border:1px solid rgba(0,0,0,.08); }
+    .maphead { display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
   </style>
 </head>
-<body>
 
+<body>
 <header>
   <div class="topbar">
     <h1 id="title">Kiinteistöt kunnittain</h1>
@@ -66,6 +75,17 @@
 </header>
 
 <div class="wrap">
+
+  <div class="card">
+    <div class="maphead">
+      <b id="mapTitle">Kartta</b>
+      <span class="small" id="mapHint">Klikkaa kuntaa → listaus avautuu</span>
+    </div>
+    <div id="map"></div>
+    <p class="muted" style="margin:10px 0 0;" id="mapNote">
+      Kartta on yleiskuva: klikkaa kuntaa ja selaa kohteet. Kiinteistörajoja ei näytetä (lohkomisia voi olla kesken).
+    </p>
+  </div>
 
   <div class="card">
     <div class="row">
@@ -85,12 +105,11 @@
   <div id="out"></div>
 </div>
 
-<footer id="footerText">
-  © Nousukiito — Kiinteistötunnukset kunnittain
-</footer>
+<footer id="footerText">© Nousukiito — Kiinteistötunnukset kunnittain</footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  // --- Language strings ---
+  // --- i18n ---
   const I18N = {
     fi: {
       title: "Kiinteistöt kunnittain",
@@ -99,6 +118,9 @@
       clear: "Tyhjennä",
       aiNote: "Huom: Osalla sivuista käännös on luotu tekoälyavusteisesti. Ulkomaankieliset yhteydenotot mieluiten kirjallisena (sähköposti/viesti), jotta voimme varmistaa oikean tulkinnan.",
       disclaimer: "Karttapalveluissa näkyvät kiinteistörajat/palstat eivät aina vastaa ajantasaista myyntitilannetta, koska lohkomisia voi olla kesken tai osia voi olla myyty aiemmin.",
+      mapTitle: "Kartta",
+      mapHint: "Klikkaa kuntaa → listaus avautuu",
+      mapNote: "Kartta on yleiskuva: klikkaa kuntaa ja selaa kohteet. Kiinteistörajoja ei näytetä (lohkomisia voi olla kesken).",
       openMap: "Avaa kartassa",
       copyId: "Kopioi tunnus",
       copied: "Kiinteistötunnus kopioitu: ",
@@ -115,6 +137,9 @@
       clear: "Clear",
       aiNote: "Note: Some translations on this site are AI-assisted. For non-Finnish enquiries, written contact (email/message) is preferred to ensure accurate understanding.",
       disclaimer: "Map services may show boundaries/plots that do not fully reflect the current sales situation due to pending parceling processes or previously sold parts.",
+      mapTitle: "Map",
+      mapHint: "Click a municipality → open the list",
+      mapNote: "Overview map: click a municipality to view the listings. Property boundaries are not shown (parceling may be in progress).",
       openMap: "Open map",
       copyId: "Copy ID",
       copied: "Property ID copied: ",
@@ -131,6 +156,9 @@
       clear: "Leeren",
       aiNote: "Hinweis: Einige Übersetzungen auf dieser Seite sind KI-gestützt. Für Anfragen in Fremdsprachen bevorzugen wir schriftliche Kontaktaufnahme (E-Mail/Nachricht), um Missverständnisse zu vermeiden.",
       disclaimer: "Kartendienste können Grenzen/Flurstücke anzeigen, die aufgrund laufender Teilungen oder früherer Verkäufe nicht vollständig dem aktuellen Verkaufsstand entsprechen.",
+      mapTitle: "Karte",
+      mapHint: "Gemeinde anklicken → Liste öffnen",
+      mapNote: "Übersichtskarte: Gemeinde anklicken, um die Liste zu öffnen. Grundstücksgrenzen werden nicht angezeigt (Teilungen können in Arbeit sein).",
       openMap: "Karte öffnen",
       copyId: "ID kopieren",
       copied: "Grundstücks-ID kopiert: ",
@@ -144,26 +172,58 @@
 
   let LANG = "fi";
 
-  // --- Map opening ---
+  // --- map ---
+  let map, muniLayer;
+  let clickableMunicipalities = new Set(); // from data.json
   const PAIKKATIETO_URL = "https://kartta.paikkatietoikkuna.fi/?lang=fi";
 
+  // We keep a small, built-in list of municipality centroids (only those you currently have).
+  // If later you add new municipalities, we can extend this list.
+  const MUNICIPALITY_CENTERS = {
+    "Enontekiö": [68.385, 23.633],
+    "Ii": [65.317, 25.372],
+    "Ilomantsi": [62.671, 30.934],
+    "Inari": [68.905, 27.027],
+    "Karijoki": [62.308, 22.719],
+    "Kemijärvi": [66.713, 27.430],
+    "Kittilä": [67.655, 24.907],
+    "Kiuruvesi": [63.653, 26.617],
+    "Kolari": [67.330, 23.790],
+    "Kuusamo": [65.966, 29.189],
+    "Lieksa": [63.317, 30.020],
+    "Muonio": [67.959, 23.678],
+    "Nurmes": [63.542, 29.141],
+    "Padasjoki": [61.350, 25.280],
+    "Pelkosenniemi": [67.110, 27.510],
+    "Posio": [66.110, 28.170],
+    "Pyhäjoki": [64.470, 24.260],
+    "Ranua": [65.930, 26.520],
+    "Rovaniemi": [66.503, 25.729],
+    "Rääkkylä": [62.315, 29.620],
+    "Salla": [66.833, 28.670],
+    "Savukoski": [67.290, 28.160],
+    "Sodankylä": [67.418, 26.590],
+    "Tervola": [66.085, 24.810],
+    "Utsjoki": [69.910, 27.030]
+  };
+
+  function escapeHtml(s) {
+    return String(s)
+      .replaceAll("&","&amp;").replaceAll("<","&lt;")
+      .replaceAll(">","&gt;").replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
   async function copyToClipboard(text) {
-    try {
-      await navigator.clipboard.writeText(text);
-      return true;
-    } catch (e) {
-      return false;
-    }
+    try { await navigator.clipboard.writeText(text); return true; }
+    catch { return false; }
   }
 
   async function openPaikkatietoWithCopy(tunnus) {
     const ok = await copyToClipboard(tunnus);
     window.open(PAIKKATIETO_URL, "_blank", "noopener");
-    if (ok) {
-      alert(I18N[LANG].copied + tunnus + "\n" + I18N[LANG].pasteHint);
-    } else {
-      prompt(I18N[LANG].copyId + ":", tunnus);
-    }
+    if (ok) alert(I18N[LANG].copied + tunnus + "\n" + I18N[LANG].pasteHint);
+    else prompt(I18N[LANG].copyId + ":", tunnus);
   }
 
   async function justCopy(tunnus) {
@@ -172,7 +232,7 @@
     else prompt(I18N[LANG].copyId + ":", tunnus);
   }
 
-  // --- Data & rendering ---
+  // --- list rendering ---
   let data = [];
 
   function groupByMunicipality(items) {
@@ -183,13 +243,6 @@
       m.get(key).push(it);
     }
     return [...m.entries()].sort((a,b) => a[0].localeCompare(b[0], "fi"));
-  }
-
-  function escapeHtml(s) {
-    return String(s)
-      .replaceAll("&","&amp;").replaceAll("<","&lt;")
-      .replaceAll(">","&gt;").replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
   }
 
   function render(items) {
@@ -204,7 +257,6 @@
     }
 
     const grouped = groupByMunicipality(items);
-
     out.innerHTML = grouped.map(([kunta, list]) => {
       const sorted = [...list].sort((a,b) => (a.tunnus||"").localeCompare(b.tunnus||""));
       const count = sorted.length;
@@ -247,7 +299,6 @@
   function filter(q) {
     q = (q || "").trim().toLowerCase();
     if (!q) return data;
-
     return data.filter(it => {
       const k = (it.kunta || "").toLowerCase();
       const t = (it.tunnus || "").toLowerCase();
@@ -258,6 +309,56 @@
     });
   }
 
+  function scrollToMunicipality(name) {
+    const el = document.getElementById("kunta-" + name);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    const qEl = document.getElementById("q");
+    qEl.value = name;
+    render(filter(name));
+  }
+
+  function rebuildMapMarkers() {
+    if (!map) return;
+
+    if (muniLayer) muniLayer.remove();
+
+    const markers = [];
+    for (const name of [...clickableMunicipalities].sort((a,b)=>a.localeCompare(b,"fi"))) {
+      const c = MUNICIPALITY_CENTERS[name];
+      if (!c) continue; // if missing, we just skip marker (we can add later)
+      const m = L.circleMarker(c, {
+        radius: 7,
+        weight: 2,
+        opacity: 0.9,
+        fillOpacity: 0.25
+      }).bindTooltip(name, {direction:"top", offset:[0,-6]})
+        .on("click", () => scrollToMunicipality(name));
+      markers.push(m);
+    }
+
+    muniLayer = L.layerGroup(markers).addTo(map);
+
+    // Fit bounds if we have markers
+    if (markers.length) {
+      const group = L.featureGroup(markers);
+      map.fitBounds(group.getBounds().pad(0.25));
+    } else {
+      map.setView([65.4, 26.0], 5);
+    }
+  }
+
+  function initMap() {
+    map = L.map("map", { scrollWheelZoom: false }).setView([65.4, 26.0], 5);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 12,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    rebuildMapMarkers();
+  }
+
   function applyLang() {
     document.getElementById("title").textContent = I18N[LANG].title;
     document.getElementById("subtitle").textContent = I18N[LANG].subtitle;
@@ -266,36 +367,44 @@
     document.getElementById("aiNote").textContent = I18N[LANG].aiNote;
     document.getElementById("disclaimer").textContent = I18N[LANG].disclaimer;
     document.getElementById("footerText").textContent = I18N[LANG].footer;
+    document.getElementById("mapTitle").textContent = I18N[LANG].mapTitle;
+    document.getElementById("mapHint").textContent = I18N[LANG].mapHint;
+    document.getElementById("mapNote").textContent = I18N[LANG].mapNote;
 
     document.getElementById("btn-fi").classList.toggle("active", LANG === "fi");
     document.getElementById("btn-en").classList.toggle("active", LANG === "en");
     document.getElementById("btn-de").classList.toggle("active", LANG === "de");
 
-    // Re-render to update button labels
     render(filter(document.getElementById("q").value));
   }
 
-  function setLang(l) {
-    LANG = l;
-    applyLang();
-  }
+  function setLang(l) { LANG = l; applyLang(); }
 
   async function init() {
     const res = await fetch("./data.json", { cache: "no-store" });
     data = await res.json();
 
-    // initial render
+    // build clickable municipality set from data.json
+    clickableMunicipalities = new Set(
+      data.map(x => (x.kunta || "").trim()).filter(Boolean)
+    );
+
+    // Initial render
     render(data);
 
+    // Search
     const qEl = document.getElementById("q");
     qEl.addEventListener("input", () => render(filter(qEl.value)));
-
     document.getElementById("clear").addEventListener("click", () => {
       qEl.value = "";
       render(data);
       qEl.focus();
     });
 
+    // Map
+    initMap();
+
+    // Texts
     applyLang();
   }
 
