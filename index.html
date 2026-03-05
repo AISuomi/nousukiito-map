@@ -3,11 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- SEO -->
-  <title>Land for sale in Lapland & Northern Finland | Nousukiito</title>
-  <meta name="description" content="Land for sale in Lapland & Northern Finland. Browse properties by municipality on a map. Forest land, rural land and areas near lakes and rivers. Contact: myynti@nousukiito.net" />
-  <meta name="keywords" content="land for sale lapland, land for sale northern finland, land for sale finland, forest land finland, lakeside land finland, rural land finland, land plots lapland, kuusamo land, salla land, inari land" />
+  <title>Nousukiito – Kiinteistöt kunnittain</title>
+  <meta name="description" content="Nousukiito: kiinteistötunnukset ja kohteet kunnittain. Selaa kohteita kartalla ja hae kiinteistötunnuksella, kunnalla tai nimellä." />
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
@@ -28,11 +25,12 @@
     .wrap { max-width:1120px; margin:0 auto; padding: 12px 18px 40px; }
     .card { background:#fff; border:1px solid var(--b); border-radius: 16px; padding: 16px; margin: 12px 0; }
     .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    input {
+    input, select, textarea {
       flex:1; min-width:240px; padding: 12px 12px;
       border-radius: 12px; border:1px solid var(--b2);
       font-size:15px;
     }
+    textarea { min-height: 110px; resize: vertical; }
     button {
       padding: 12px 14px; border-radius: 12px; border:1px solid var(--b2);
       background:#fff; cursor:pointer; font-weight:750;
@@ -60,21 +58,20 @@
     #map { height: 420px; border-radius: 14px; overflow:hidden; margin-top:12px; border:1px solid rgba(0,0,0,.08); }
     .maphead { display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
 
-    /* municipality quick filter */
-    .filterwrap { margin-top: 10px; display:flex; flex-wrap:wrap; gap:8px; }
-    .filterbtn {
-      padding: 7px 11px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,.18);
-      background: #fff;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .filterbtn:hover { filter: brightness(.98); }
-    .filterbtn.active { border-color: rgba(0,0,0,.42); }
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; } }
 
-    h2 { font-size: 18px; margin: 0 0 10px; }
+    .ctaRow { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .ctaBtn {
+      display:inline-block;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border:1px solid var(--b2);
+      background:#fff;
+      font-weight:800;
+    }
+
+    .hide { display:none !important; }
   </style>
 </head>
 
@@ -96,42 +93,27 @@
 
 <div class="wrap">
 
+  <!-- MAP -->
   <div class="card">
     <div class="maphead">
       <b id="mapTitle">Kartta</b>
       <span class="small" id="mapHint">Klikkaa kuntaa → listaus avautuu</span>
     </div>
-
-    <div class="muted" id="mapGuide" style="margin:10px 0 0;">
-      <ul style="margin:8px 0 0; padding-left:18px;">
-        <li id="mg1">Klikkaa kuntaa kartalla → listaus suodattuu</li>
-        <li id="mg2">Avaa kohde “Avaa kartassa” → kiinteistötunnus kopioituu</li>
-        <li id="mg3">Lähetä ostotoive sähköpostilla (mallipohja)</li>
-      </ul>
-    </div>
-
     <div id="map"></div>
-
     <p class="muted" style="margin:10px 0 0;" id="mapNote">
       Kartta on yleiskuva: klikkaa kuntaa ja selaa kohteet. Kiinteistörajoja ei näytetä (lohkomisia voi olla kesken).
     </p>
-
-    <div class="muted" style="margin-top:10px;">
-      <b id="filterTitle">Kuntasuodatin</b>
-      <div id="municipalityFilter" class="filterwrap"></div>
-      <div class="small" id="filterNote" style="margin-top:8px;">
-        (Listaus perustuu julkaistuihin kohteisiin. Kysy myös muista kokonaisuuksista.)
-      </div>
-    </div>
   </div>
 
+  <!-- SEARCH + DISCLAIMERS -->
   <div class="card">
     <div class="row">
       <input id="q" placeholder="Hae: kunta (Inari) / tunnus (148-401...) / nimi (JUSSILA)" />
       <button id="clear">Tyhjennä</button>
     </div>
 
-    <p class="muted note" id="aiNote" style="margin:12px 0 0;">
+    <!-- AI NOTE (shown only in EN/DE) -->
+    <p class="muted note hide" id="aiNote" style="margin:12px 0 0;">
       Note: Some translations on this site are AI-assisted. For non-Finnish enquiries, written contact (email/message) is preferred to ensure accurate understanding.
     </p>
 
@@ -139,73 +121,112 @@
       Karttapalveluissa näkyvät kiinteistörajat/palstat eivät aina vastaa ajantasaista myyntitilannetta, koska lohkomisia voi olla kesken tai osia voi olla myyty aiemmin.
     </p>
 
-    <p class="muted" style="margin:10px 0 0;">
-      <b id="contactLabel">Yhteys:</b>
-      <a id="emailLink" href="#">myynti@nousukiito.net</a>
-      &nbsp;•&nbsp;
-      <a href="https://www.youtube.com/channel/UCuaBkujERCrplur9Oe8nZUw/videos" target="_blank" rel="noopener">Videos (YouTube)</a>
+    <div class="ctaRow" style="margin-top:12px;">
+      <a class="ctaBtn" id="ctaMapBtn" href="https://map.nousukiito.net" target="_blank" rel="noopener">Selaa kohteita kartalla</a>
+      <a class="ctaBtn" id="ctaMailBtn" href="mailto:myynti@nousukiito.net">Ota yhteyttä: myynti@nousukiito.net</a>
+    </div>
+
+    <div class="small" id="ctaText" style="margin-top:10px;">
+      Voit myös selata kohteita kartalla: <a href="https://map.nousukiito.net" target="_blank" rel="noopener">map.nousukiito.net</a>
+    </div>
+  </div>
+
+  <!-- SALES INFO -->
+  <div class="card">
+    <b id="salesTitle">Tietoa ostajalle</b>
+    <div class="grid2" style="margin-top:10px;">
+      <div>
+        <div class="muted" id="salesA">
+          Pääasiassa kohteet ovat kaavan ulkopuolisia, ja rakentaminen tapahtuu tyypillisesti poikkeamisluvalla. Rakentamiseen liittyvät kysymykset: kunnan rakennusvalvonta.
+        </div>
+        <div class="muted" id="salesB" style="margin-top:10px;">
+          Hintataso on yleensä €/m² -perusteinen ja voi vaihdella esimerkiksi noin 0,17–20 €/m² kohteesta ja kokonaisuudesta riippuen (tai ilman kiinteää hintaa – pyydä tarjous).
+        </div>
+      </div>
+      <div>
+        <div class="muted" id="salesC">
+          Kaupan voi tehdä sähköisesti Maanmittauslaitoksen Kiinteistövaihdannan palvelussa tai perinteisesti kaupanvahvistuksella (esim. OP Alajärvi; tarvittaessa valtakirjalla).
+        </div>
+        <div class="muted" id="salesD" style="margin-top:10px;">
+          Kaupan kustannukset: varainsiirtovero 3 % kauppasummasta sekä lohkomis-, kaupanvahvistus- ja lainhuutokulut Maanmittauslaitoksen voimassa olevan hinnaston mukaan.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT FORM (mailto builder) -->
+  <div class="card">
+    <b id="contactTitle">Ota yhteyttä</b>
+    <p class="muted" id="contactHint" style="margin:8px 0 0;">
+      Kerro lyhyesti sijainti, pinta-ala, käyttötarkoitus, kokonaisuuden hintahaarukka sekä “must be” -kriteerit. Kiinteistötunnus on vapaaehtoinen.
+    </p>
+
+    <div class="grid2" style="margin-top:10px;">
+      <input id="f_name" placeholder="Nimi" />
+      <input id="f_email" placeholder="Sähköposti" />
+      <input id="f_muni" placeholder="Kunta / alue (esim. Salla, Inari…)" />
+      <input id="f_pid" placeholder="Kiinteistötunnus (valinnainen)" />
+    </div>
+
+    <div class="grid2" style="margin-top:10px;">
+      <input id="f_size" placeholder="Toivottu pinta-ala (esim. 2–10 ha)" />
+      <input id="f_use" placeholder="Käyttötarkoitus (esim. vapaa-aika, metsä, sijoitus…)" />
+    </div>
+
+    <div class="grid2" style="margin-top:10px;">
+      <input id="f_budget" placeholder="Kokonaisuuden hintahaarukka (esim. 15–50 t€)" />
+      <input id="f_must" placeholder="“Must be” -kriteerit (esim. ranta, tie, sähkö…)" />
+    </div>
+
+    <textarea id="f_msg" placeholder="Lisätiedot / kysymykset"></textarea>
+
+    <div class="row" style="margin-top:10px;">
+      <button id="sendBtn">Luo sähköposti</button>
+      <span class="small" id="sendHint">Avautuu sähköpostiohjelma (vastaanottaja: myynti@nousukiito.net)</span>
+    </div>
+  </div>
+
+  <!-- OPTIONAL SEO TEXT (shown only EN/DE) -->
+  <div class="card hide" id="seoTextCard">
+    <h2 id="seoTitle" style="margin:0 0 8px;">Land areas in Lapland & Northern Finland</h2>
+    <p class="muted" id="seoP1" style="margin:0 0 10px;">
+      Nousukiito offers land areas across Lapland and Northern Finland. Properties include forest land, rural land and land areas located near lakes and rivers in quiet natural environments.
+    </p>
+    <p class="muted" id="seoP2" style="margin:0 0 10px;">
+      Available municipalities include for example Inari, Utsjoki, Enontekiö, Muonio, Kittilä, Sodankylä, Savukoski, Salla, Kemijärvi, Ranua, Posio and Kuusamo.
+    </p>
+    <p class="muted" id="seoP3" style="margin:0;">
+      Browse properties by municipality using the interactive map above or contact us if you are looking for a specific type of land area in Lapland or Northern Finland.
     </p>
   </div>
 
+  <!-- LIST -->
   <div id="out"></div>
 
-  <!-- EN/DE info cards (hidden on FI) -->
-  <div id="seoCards">
-    <div class="card">
-      <h2 id="whyTitle">Why buy land in Lapland & Northern Finland</h2>
-      <p class="muted" id="whyP1" style="margin:0 0 10px;">
-        Northern Finland offers large natural areas, forests, rivers and lakes, with low population density and clean natural environments.
-      </p>
-      <p class="muted" id="whyP2" style="margin:0;">
-        Land ownership in Finland is secure and transparent, and property transactions can be completed electronically through the Finnish Land Information System.
-      </p>
-    </div>
-
-    <div class="card">
-      <h2 id="areasTitle">Land areas across Lapland & Northern Finland</h2>
-      <p class="muted" id="areasP1" style="margin:0 0 10px;">
-        Available land areas are located across Finnish Lapland and Northern Finland. Browse properties by municipality using the map and list above.
-      </p>
-      <p class="muted" id="areasP2" style="margin:0;">
-        Many areas are located near forests, rivers and lakes in quiet northern wilderness landscapes.
-      </p>
-    </div>
-
-    <div class="card">
-      <h2 id="waterTitle">Lakes and rivers in Lapland & Northern Finland</h2>
-      <p class="muted" id="waterP1" style="margin:0 0 10px;">
-        Many land areas are located near lakes, rivers and natural waterways across Lapland and Northern Finland.
-      </p>
-      <p class="muted" id="waterList" style="margin:0;">
-        Muonionjoki, Lätäseno, Tarvantojoki, Kitkajoki, Oulankajoki, Kuusinkijoki, Jeesiöjoki, Kemijoki, Kitinen, Raudanjoki, Kelottijärvi, Vakkojärvi, Äkäsjärvi, Hirvasjärvi, Pahtajärvi, Kiutajärvi, Karhujärvi, Iijärvi, Suovajärvi, Livojärvi, Irnijärvi, Polojärvi, Julma-Ölkky, Ala-Ölkky, Kuoliojoki, Vääräjärvi, Kuntijärvi, Ropakkojärvi, Kemijärvi, Menesjärvi.
-      </p>
-      <p class="muted" style="margin:10px 0 0;">
-        <a href="https://www.youtube.com/channel/UCuaBkujERCrplur9Oe8nZUw/videos" target="_blank" rel="noopener">Videos of land areas and natural environments</a>
-      </p>
-    </div>
-  </div>
-
-  <!-- Hidden SEO block -->
+  <!-- HIDDEN SEO KEYWORDS -->
   <div style="display:none" id="seoHidden">
-    Land for sale Lapland Finland
+    Land for sale Finland
+    Land for sale Lapland
     Land for sale Northern Finland
-    Land for sale Inari Finland
-    Land for sale Utsjoki Finland
-    Land for sale Enontekiö Finland
-    Land for sale Muonio Finland
-    Land for sale Kittilä Finland
-    Land for sale Sodankylä Finland
-    Land for sale Savukoski Finland
-    Land for sale Pelkosenniemi Finland
-    Land for sale Salla Finland
-    Land for sale Kemijärvi Finland
-    Land for sale Rovaniemi Finland
-    Land for sale Ranua Finland
-    Land for sale Posio Finland
-    Land for sale Kuusamo Finland
+    Land for sale Lapland & Northern Finland
+    Land for sale Finnish Lapland
+    Forest land Finland
     Forest land Lapland
-    Lakeside land Lapland
+    Lakeside land Finland
+    Lakefront land Finland
+    Land near rivers Finland
+    Land near lakes Finland
     Rural land Northern Finland
+    Wilderness land Finland
+
+    Inari Utsjoki Enontekiö Muonio Kittilä Sodankylä Savukoski Salla Kemijärvi Ranua Posio Kuusamo Rovaniemi Pelkosenniemi Kolari
+
+    Kelottijärvi Vakkojärvi Muonionjoki Lätäseno Tarvantojoki Hirvasjärvi Pahtajärvi Äkäsjärvi
+    Suovajärvi Livojärvi Kitkajoki Oulankajoki Jeesiöjoki Kemijoki Raudanjoki Kitinen
+    Kiutajärvi Karhujärvi Kuusinkijoki Pyhäjärvi Menesjärvi
+
+    #Lapponia #virkistys #villipohjola #rauha #lapland #ruska #revontulet #lapintaika #kaira #tenho #yötönyö #kaamos
+    yhteismetsä venevalkama
   </div>
 
 </div>
@@ -214,30 +235,18 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  const EMAIL_TEMPLATE = "mailto:myynti@nousukiito.net" +
-    "?subject=Land%20request%20/%20Ostotoive" +
-    "&body=" +
-    "Property%20ID%20(optional):%0A%0A" +
-    "Location%20/%20Paikkakunta:%0A%0A" +
-    "Size%20/%20Pinta-ala:%0A%0A" +
-    "Intended%20use%20/%20K%C3%A4ytt%C3%B6tarkoitus:%0A%0A" +
-    "Waterfront%20interest%20(lake/river):%0A%0A" +
-    "Budget%20range%20/%20Hintahaarukka:%0A%0A" +
-    "Must%20be%20criteria:%0A";
-
-  // --- i18n ---
+  // ---------------- i18n ----------------
   const I18N = {
     fi: {
       title: "Kiinteistöt kunnittain",
       subtitle: "Etsi kunta, kiinteistötunnus tai nimi. Avatessa kartan tunnus kopioituu valmiiksi.",
       searchPh: "Hae: kunta (Inari) / tunnus (148-401...) / nimi (JUSSILA)",
       clear: "Tyhjennä",
+      aiNote: "",
       disclaimer: "Karttapalveluissa näkyvät kiinteistörajat/palstat eivät aina vastaa ajantasaista myyntitilannetta, koska lohkomisia voi olla kesken tai osia voi olla myyty aiemmin.",
       mapTitle: "Kartta",
       mapHint: "Klikkaa kuntaa → listaus avautuu",
       mapNote: "Kartta on yleiskuva: klikkaa kuntaa ja selaa kohteet. Kiinteistörajoja ei näytetä (lohkomisia voi olla kesken).",
-      filterTitle: "Kuntasuodatin",
-      filterNote: "(Listaus perustuu julkaistuihin kohteisiin. Kysy myös muista kokonaisuuksista.)",
       openMap: "Avaa kartassa",
       copyId: "Kopioi tunnus",
       copied: "Kiinteistötunnus kopioitu: ",
@@ -245,22 +254,40 @@
       noHits: "Ei osumia.",
       tryOther: "Kokeile toista hakusanaa.",
       footer: "© Nousukiito — Kiinteistötunnukset kunnittain",
-      contactLabel: "Yhteys:",
-      mg1: "Klikkaa kuntaa kartalla → listaus suodattuu",
-      mg2: "Avaa kohde “Avaa kartassa” → kiinteistötunnus kopioituu",
-      mg3: "Lähetä ostotoive sähköpostilla (mallipohja)"
+      count: "kpl",
+      ctaMap: "Selaa kohteita kartalla",
+      ctaMail: "Ota yhteyttä: myynti@nousukiito.net",
+      ctaText: 'Voit myös selata kohteita kartalla: <a href="https://map.nousukiito.net" target="_blank" rel="noopener">map.nousukiito.net</a>',
+      salesTitle: "Tietoa ostajalle",
+      salesA: "Pääasiassa kohteet ovat kaavan ulkopuolisia, ja rakentaminen tapahtuu tyypillisesti poikkeamisluvalla. Rakentamiseen liittyvät kysymykset: kunnan rakennusvalvonta.",
+      salesB: "Hintataso on yleensä €/m² -perusteinen ja voi vaihdella esimerkiksi noin 0,17–20 €/m² kohteesta ja kokonaisuudesta riippuen (tai ilman kiinteää hintaa – pyydä tarjous).",
+      salesC: "Kaupan voi tehdä sähköisesti Maanmittauslaitoksen Kiinteistövaihdannan palvelussa tai perinteisesti kaupanvahvistuksella (esim. OP Alajärvi; tarvittaessa valtakirjalla).",
+      salesD: "Kaupan kustannukset: varainsiirtovero 3 % kauppasummasta sekä lohkomis-, kaupanvahvistus- ja lainhuutokulut Maanmittauslaitoksen voimassa olevan hinnaston mukaan.",
+      contactTitle: "Ota yhteyttä",
+      contactHint: "Kerro lyhyesti sijainti, pinta-ala, käyttötarkoitus, kokonaisuuden hintahaarukka sekä “must be” -kriteerit. Kiinteistötunnus on vapaaehtoinen.",
+      f_name: "Nimi",
+      f_email: "Sähköposti",
+      f_muni: "Kunta / alue (esim. Salla, Inari…)",
+      f_pid: "Kiinteistötunnus (valinnainen)",
+      f_size: "Toivottu pinta-ala (esim. 2–10 ha)",
+      f_use: "Käyttötarkoitus (esim. vapaa-aika, metsä, sijoitus…)",
+      f_budget: "Kokonaisuuden hintahaarukka (esim. 15–50 t€)",
+      f_must: "“Must be” -kriteerit (esim. ranta, tie, sähkö…)",
+      f_msg: "Lisätiedot / kysymykset",
+      sendBtn: "Luo sähköposti",
+      sendHint: "Avautuu sähköpostiohjelma (vastaanottaja: myynti@nousukiito.net)",
+      seoVisible: false
     },
     en: {
       title: "Properties by municipality",
       subtitle: "Search by municipality, property ID, or name. When opening the map, the ID is copied automatically.",
       searchPh: "Search: municipality (Inari) / ID (148-401...) / name (JUSSILA)",
       clear: "Clear",
+      aiNote: "Note: Some translations on this site are AI-assisted. For non-Finnish enquiries, written contact (email/message) is preferred to ensure accurate understanding.",
       disclaimer: "Map services may show boundaries/plots that do not fully reflect the current sales situation due to pending parceling processes or previously sold parts.",
       mapTitle: "Map",
       mapHint: "Click a municipality → open the list",
       mapNote: "Overview map: click a municipality to view the listings. Property boundaries are not shown (parceling may be in progress).",
-      filterTitle: "Municipality filter",
-      filterNote: "(This list is based on published items. Ask about additional availability.)",
       openMap: "Open map",
       copyId: "Copy ID",
       copied: "Property ID copied: ",
@@ -268,22 +295,40 @@
       noHits: "No results.",
       tryOther: "Try another search term.",
       footer: "© Nousukiito — Properties by municipality",
-      contactLabel: "Contact:",
-      mg1: "Click a municipality on the map → the list is filtered",
-      mg2: "Open an item → the property ID is copied",
-      mg3: "Send your request by email (template link)"
+      count: "items",
+      ctaMap: "Browse properties on the map",
+      ctaMail: "Contact: myynti@nousukiito.net",
+      ctaText: 'You can also browse the map here: <a href="https://map.nousukiito.net" target="_blank" rel="noopener">map.nousukiito.net</a>',
+      salesTitle: "Buyer information",
+      salesA: "Most sites are outside zoning plans, and building is typically handled via a deviation permit. Building-related questions: the municipality’s building control office.",
+      salesB: "Pricing is usually based on €/m² and may vary for example around €0.17–20/m² depending on the site and bundle (or no fixed price — request an offer).",
+      salesC: "Property transactions can be completed electronically using the National Land Survey’s service, or traditionally with an official confirmer (power of attorney possible when needed).",
+      salesD: "Transaction costs: transfer tax 3% of the purchase price, plus parceling, confirmer and title registration fees according to the National Land Survey’s current fee schedule.",
+      contactTitle: "Contact us",
+      contactHint: "Please describe location, desired size, intended use, budget range and must-have criteria. Property ID is optional.",
+      f_name: "Name",
+      f_email: "Email",
+      f_muni: "Municipality / area (e.g., Salla, Inari…)",
+      f_pid: "Property ID (optional)",
+      f_size: "Desired size (e.g., 2–10 ha)",
+      f_use: "Intended use (leisure, forest, investment…)",
+      f_budget: "Budget range (e.g., €15k–€50k)",
+      f_must: "Must-have criteria (e.g., waterfront, road access, electricity…)",
+      f_msg: "Additional details / questions",
+      sendBtn: "Create email",
+      sendHint: "Opens your email client (recipient: myynti@nousukiito.net)",
+      seoVisible: true
     },
     de: {
       title: "Grundstücke nach Gemeinde",
       subtitle: "Suche nach Gemeinde, Grundstücks-ID oder Name. Beim Öffnen der Karte wird die ID automatisch kopiert.",
       searchPh: "Suche: Gemeinde (Inari) / ID (148-401...) / Name (JUSSILA)",
       clear: "Leeren",
+      aiNote: "Hinweis: Einige Übersetzungen auf dieser Seite sind KI-gestützt. Für Anfragen in Fremdsprachen bevorzugen wir schriftliche Kontaktaufnahme (E-Mail/Nachricht), um Missverständnisse zu vermeiden.",
       disclaimer: "Kartendienste können Grenzen/Flurstücke anzeigen, die aufgrund laufender Teilungen oder früherer Verkäufe nicht vollständig dem aktuellen Verkaufsstand entsprechen.",
       mapTitle: "Karte",
       mapHint: "Gemeinde anklicken → Liste öffnen",
       mapNote: "Übersichtskarte: Gemeinde anklicken, um die Liste zu öffnen. Grundstücksgrenzen werden nicht angezeigt (Teilungen können in Arbeit sein).",
-      filterTitle: "Gemeindefilter",
-      filterNote: "(Diese Liste basiert auf veröffentlichten Objekten. Bitte fragen Sie nach weiterer Verfügbarkeit.)",
       openMap: "Karte öffnen",
       copyId: "ID kopieren",
       copied: "Grundstücks-ID kopiert: ",
@@ -291,16 +336,35 @@
       noHits: "Keine Treffer.",
       tryOther: "Bitte einen anderen Suchbegriff versuchen.",
       footer: "© Nousukiito — Grundstücke nach Gemeinde",
-      contactLabel: "Kontakt:",
-      mg1: "Gemeinde auf der Karte anklicken → Liste wird gefiltert",
-      mg2: "Objekt öffnen → Grundstücks-ID wird kopiert",
-      mg3: "Anfrage per E-Mail senden (Vorlage-Link)"
+      count: "Stk.",
+      ctaMap: "Grundstücke auf der Karte ansehen",
+      ctaMail: "Kontakt: myynti@nousukiito.net",
+      ctaText: 'Karte öffnen: <a href="https://map.nousukiito.net" target="_blank" rel="noopener">map.nousukiito.net</a>',
+      salesTitle: "Informationen für Käufer",
+      salesA: "Die meisten Objekte liegen außerhalb von Bebauungsplänen; Bauen erfolgt typischerweise über eine Ausnahmegenehmigung. Fragen zum Bauen: Bauaufsicht der Gemeinde.",
+      salesB: "Die Preisgestaltung basiert meist auf €/m² und kann z. B. etwa €0,17–20/m² betragen (oder ohne Festpreis — Angebot anfragen).",
+      salesC: "Kaufabwicklung ist elektronisch über den Dienst der finnischen Vermessungsbehörde möglich oder klassisch mit Kaufbestätigung (Vollmacht bei Bedarf möglich).",
+      salesD: "Kaufkosten: Grunderwerbsteuer 3% des Kaufpreises sowie Teilungs-, Bestätigungs- und Eintragungskosten gemäß aktueller Gebührenordnung der finnischen Vermessungsbehörde.",
+      contactTitle: "Kontakt",
+      contactHint: "Bitte Standort, gewünschte Größe, Nutzung, Budgetspanne und Must-have-Kriterien beschreiben. Grundstücks-ID ist optional.",
+      f_name: "Name",
+      f_email: "E-Mail",
+      f_muni: "Gemeinde / Region (z. B. Salla, Inari…)",
+      f_pid: "Grundstücks-ID (optional)",
+      f_size: "Gewünschte Größe (z. B. 2–10 ha)",
+      f_use: "Nutzung (Freizeit, Wald, Investment…)",
+      f_budget: "Budgetspanne (z. B. €15k–€50k)",
+      f_must: "Must-have (z. B. Ufer, Zufahrt, Strom…)",
+      f_msg: "Zusätzliche Angaben / Fragen",
+      sendBtn: "E-Mail erstellen",
+      sendHint: "Öffnet Ihr E-Mail-Programm (Empfänger: myynti@nousukiito.net)",
+      seoVisible: true
     }
   };
 
   let LANG = "fi";
 
-  // --- map ---
+  // ---------------- map ----------------
   let map, muniLayer;
   let clickableMunicipalities = new Set();
   const PAIKKATIETO_URL = "https://kartta.paikkatietoikkuna.fi/?lang=fi";
@@ -348,11 +412,8 @@
   async function openPaikkatietoWithCopy(tunnus) {
     const ok = await copyToClipboard(tunnus);
     window.open(PAIKKATIETO_URL, "_blank", "noopener");
-    if (ok) {
-      alert(I18N[LANG].copied + tunnus + "\n\n" + I18N[LANG].pasteHint);
-    } else {
-      prompt(I18N[LANG].copyId + ":", tunnus);
-    }
+    if (ok) alert(I18N[LANG].copied + tunnus + "\n" + I18N[LANG].pasteHint);
+    else prompt(I18N[LANG].copyId + ":", tunnus);
   }
 
   async function justCopy(tunnus) {
@@ -361,7 +422,7 @@
     else prompt(I18N[LANG].copyId + ":", tunnus);
   }
 
-  // --- list rendering ---
+  // ---------------- list rendering ----------------
   let data = [];
 
   function groupByMunicipality(items) {
@@ -388,11 +449,12 @@
     const grouped = groupByMunicipality(items);
     out.innerHTML = grouped.map(([kunta, list]) => {
       const sorted = [...list].sort((a,b) => (a.tunnus||"").localeCompare(b.tunnus||""));
+      const count = sorted.length;
 
       return `
         <div class="card" id="kunta-${escapeHtml(kunta)}">
           <details open>
-            <summary>${escapeHtml(kunta)}</summary>
+            <summary>${escapeHtml(kunta)}<span class="pill">${count} ${escapeHtml(I18N[LANG].count)}</span></summary>
             <ul>
               ${sorted.map(it => {
                 const t = it.tunnus || "";
@@ -437,15 +499,13 @@
     });
   }
 
-  function scrollToMunicipality(name, doFilter=true) {
+  function scrollToMunicipality(name) {
     const el = document.getElementById("kunta-" + name);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 
-    if (doFilter) {
-      const qEl = document.getElementById("q");
-      qEl.value = name;
-      render(filter(name));
-    }
+    const qEl = document.getElementById("q");
+    qEl.value = name;
+    render(filter(name));
   }
 
   function rebuildMapMarkers() {
@@ -456,13 +516,18 @@
     for (const name of [...clickableMunicipalities].sort((a,b)=>a.localeCompare(b,"fi"))) {
       const c = MUNICIPALITY_CENTERS[name];
       if (!c) continue;
+
       const m = L.circleMarker(c, {
         radius: 7,
         weight: 2,
         opacity: 0.9,
         fillOpacity: 0.25
-      }).bindTooltip(name, {direction:"top", offset:[0,-6]})
-        .on("click", () => scrollToMunicipality(name, true));
+      })
+      .bindTooltip(name, {direction:"top", offset:[0,-6]})
+      .on("click", () => {
+        scrollToMunicipality(name);
+      });
+
       markers.push(m);
     }
 
@@ -487,91 +552,111 @@
     rebuildMapMarkers();
   }
 
-  // municipality quick filter (no counts)
-  let activeMunicipality = "";
-
-  function setActiveFilterButton(name) {
-    const buttons = document.querySelectorAll("#municipalityFilter .filterbtn");
-    buttons.forEach(b => b.classList.toggle("active", b.dataset.muni === name));
-  }
-
-  function buildMunicipalityFilter() {
-    const container = document.getElementById("municipalityFilter");
-    container.innerHTML = "";
-
-    const municipalities = [...new Set(data.map(x => (x.kunta||"").trim()).filter(Boolean))]
-      .sort((a,b)=>a.localeCompare(b,"fi"));
-
-    const makeBtn = (label, muni) => {
-      const btn = document.createElement("button");
-      btn.className = "filterbtn";
-      btn.textContent = label;
-      btn.dataset.muni = muni;
-      btn.onclick = () => {
-        activeMunicipality = muni;
-        setActiveFilterButton(muni);
-
-        const qEl = document.getElementById("q");
-
-        if (!muni) {
-          qEl.value = "";
-          render(data);
-          rebuildMapMarkers();
-          return;
-        }
-
-        qEl.value = muni;
-        render(filter(muni));
-        scrollToMunicipality(muni, false);
-      };
-      return btn;
-    };
-
-    // Button label "All" stays as-is (neutral)
-    container.appendChild(makeBtn("All", ""));
-    municipalities.forEach(m => container.appendChild(makeBtn(m, m)));
-
-    setActiveFilterButton(activeMunicipality);
-  }
-
   function applyLang() {
-    document.getElementById("title").textContent = I18N[LANG].title;
-    document.getElementById("subtitle").textContent = I18N[LANG].subtitle;
-    document.getElementById("q").placeholder = I18N[LANG].searchPh;
-    document.getElementById("clear").textContent = I18N[LANG].clear;
-    document.getElementById("disclaimer").textContent = I18N[LANG].disclaimer;
-    document.getElementById("footerText").textContent = I18N[LANG].footer;
-    document.getElementById("mapTitle").textContent = I18N[LANG].mapTitle;
-    document.getElementById("mapHint").textContent = I18N[LANG].mapHint;
-    document.getElementById("mapNote").textContent = I18N[LANG].mapNote;
-    document.getElementById("filterTitle").textContent = I18N[LANG].filterTitle;
-    document.getElementById("filterNote").textContent = I18N[LANG].filterNote;
-    document.getElementById("contactLabel").textContent = I18N[LANG].contactLabel;
+    const t = I18N[LANG];
 
-    document.getElementById("mg1").textContent = I18N[LANG].mg1;
-    document.getElementById("mg2").textContent = I18N[LANG].mg2;
-    document.getElementById("mg3").textContent = I18N[LANG].mg3;
+    document.getElementById("title").textContent = t.title;
+    document.getElementById("subtitle").textContent = t.subtitle;
+    document.getElementById("q").placeholder = t.searchPh;
+    document.getElementById("clear").textContent = t.clear;
+
+    document.getElementById("disclaimer").textContent = t.disclaimer;
+    document.getElementById("mapTitle").textContent = t.mapTitle;
+    document.getElementById("mapHint").textContent = t.mapHint;
+    document.getElementById("mapNote").textContent = t.mapNote;
+    document.getElementById("footerText").textContent = t.footer;
+
+    document.getElementById("ctaMapBtn").textContent = t.ctaMap;
+    document.getElementById("ctaMailBtn").textContent = t.ctaMail;
+    document.getElementById("ctaText").innerHTML = t.ctaText;
+
+    document.getElementById("salesTitle").textContent = t.salesTitle;
+    document.getElementById("salesA").textContent = t.salesA;
+    document.getElementById("salesB").textContent = t.salesB;
+    document.getElementById("salesC").textContent = t.salesC;
+    document.getElementById("salesD").textContent = t.salesD;
+
+    document.getElementById("contactTitle").textContent = t.contactTitle;
+    document.getElementById("contactHint").textContent = t.contactHint;
+
+    document.getElementById("f_name").placeholder = t.f_name;
+    document.getElementById("f_email").placeholder = t.f_email;
+    document.getElementById("f_muni").placeholder = t.f_muni;
+    document.getElementById("f_pid").placeholder = t.f_pid;
+    document.getElementById("f_size").placeholder = t.f_size;
+    document.getElementById("f_use").placeholder = t.f_use;
+    document.getElementById("f_budget").placeholder = t.f_budget;
+    document.getElementById("f_must").placeholder = t.f_must;
+    document.getElementById("f_msg").placeholder = t.f_msg;
+    document.getElementById("sendBtn").textContent = t.sendBtn;
+    document.getElementById("sendHint").textContent = t.sendHint;
+
+    // AI note: only EN/DE
+    const aiEl = document.getElementById("aiNote");
+    if (LANG === "fi") {
+      aiEl.classList.add("hide");
+      aiEl.textContent = "";
+    } else {
+      aiEl.classList.remove("hide");
+      aiEl.textContent = t.aiNote;
+    }
+
+    // SEO visible text: only EN/DE
+    const seoCard = document.getElementById("seoTextCard");
+    seoCard.classList.toggle("hide", !t.seoVisible);
 
     document.getElementById("btn-fi").classList.toggle("active", LANG === "fi");
     document.getElementById("btn-en").classList.toggle("active", LANG === "en");
     document.getElementById("btn-de").classList.toggle("active", LANG === "de");
-
-    // Show translation note only for non-Finnish
-    document.getElementById("aiNote").style.display = (LANG === "fi") ? "none" : "block";
-
-    // Hide EN/DE SEO cards on Finnish
-    document.getElementById("seoCards").style.display = (LANG === "fi") ? "none" : "block";
 
     render(filter(document.getElementById("q").value));
   }
 
   function setLang(l) { LANG = l; applyLang(); }
 
-  async function init() {
-    // email link template
-    const emailEl = document.getElementById("emailLink");
-    emailEl.href = EMAIL_TEMPLATE;
+  // ---------------- mailto builder ----------------
+  function v(id){ return (document.getElementById(id).value || "").trim(); }
 
+  function buildMail() {
+    const to = "myynti@nousukiito.net";
+    const name = v("f_name");
+    const email = v("f_email");
+    const muni = v("f_muni");
+    const pid = v("f_pid");
+    const size = v("f_size");
+    const use = v("f_use");
+    const budget = v("f_budget");
+    const must = v("f_must");
+    const msg = v("f_msg");
+
+    const subject = (LANG === "fi")
+      ? "Yhteydenotto – maa-alue / kiinteistö"
+      : (LANG === "de" ? "Anfrage – Grundstück / Landfläche" : "Enquiry – land area / property");
+
+    const lines = [];
+    lines.push("Name: " + name);
+    lines.push("Email: " + email);
+    lines.push("Municipality/Area: " + muni);
+    if (pid) lines.push("Property ID: " + pid + " (optional)");
+    lines.push("Desired size: " + size);
+    lines.push("Intended use: " + use);
+    lines.push("Budget range: " + budget);
+    lines.push("Must-have: " + must);
+    lines.push("");
+    lines.push("Message:");
+    lines.push(msg);
+
+    const body = lines.join("\n");
+
+    const url = "mailto:" + encodeURIComponent(to)
+      + "?subject=" + encodeURIComponent(subject)
+      + "&body=" + encodeURIComponent(body);
+
+    window.location.href = url;
+  }
+
+  // ---------------- init ----------------
+  async function init() {
     const res = await fetch("./data.json", { cache: "no-store" });
     data = await res.json();
 
@@ -579,25 +664,26 @@
       data.map(x => (x.kunta || "").trim()).filter(Boolean)
     );
 
-    render(data);
-
+    // Search
     const qEl = document.getElementById("q");
-    qEl.addEventListener("input", () => {
-      activeMunicipality = "";
-      setActiveFilterButton("");
-      render(filter(qEl.value));
-    });
-
+    qEl.addEventListener("input", () => render(filter(qEl.value)));
     document.getElementById("clear").addEventListener("click", () => {
       qEl.value = "";
-      activeMunicipality = "";
-      setActiveFilterButton("");
       render(data);
       qEl.focus();
     });
 
+    // Send email
+    document.getElementById("sendBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      buildMail();
+    });
+
+    // Map
     initMap();
-    buildMunicipalityFilter();
+
+    // Initial render + language apply
+    render(data);
     applyLang();
   }
 
