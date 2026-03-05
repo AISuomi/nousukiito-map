@@ -1,68 +1,54 @@
 <!doctype html>
 <html lang="fi">
 <head>
-<meta charset="utf-8">
-<title>Nousukiito – Kunnat ja kiinteistöt</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body{font-family:Arial;margin:40px;background:#f5f5f5}
-h1{margin-bottom:20px}
-.card{background:white;padding:20px;border-radius:10px;margin-bottom:15px}
-a{color:#0066cc;text-decoration:none}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nousukiito – Kiinteistöt kunnittain</title>
+  <style>
+    :root { --b: rgba(0,0,0,.12); --b2: rgba(0,0,0,.18); --mut: rgba(0,0,0,.72); }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin:0; background:#fafafa; }
+    header { max-width: 1120px; margin: 0 auto; padding: 26px 18px 10px; }
+    .topbar { display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+    h1 { margin:0; font-size: 28px; letter-spacing: -.2px; }
+    .langs { display:flex; gap:8px; }
+    .langbtn {
+      border:1px solid var(--b2); background:#fff; border-radius:999px; padding:8px 10px;
+      cursor:pointer; font-weight:650; font-size:13px;
+    }
+    .langbtn.active { border-color: rgba(0,0,0,.38); }
+    .sub { margin:10px 0 0; color: var(--mut); line-height:1.45; }
+    .wrap { max-width:1120px; margin:0 auto; padding: 12px 18px 40px; }
+    .card { background:#fff; border:1px solid var(--b); border-radius: 16px; padding: 16px; margin: 12px 0; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    input {
+      flex:1; min-width:240px; padding: 12px 12px;
+      border-radius: 12px; border:1px solid var(--b2);
+      font-size:15px;
+    }
+    button {
+      padding: 12px 14px; border-radius: 12px; border:1px solid var(--b2);
+      background:#fff; cursor:pointer; font-weight:650;
+    }
+    button:hover { filter: brightness(.98); }
+    details { border-top:1px solid rgba(0,0,0,.08); padding-top: 10px; }
+    summary { cursor:pointer; font-weight: 750; }
+    ul { margin: 10px 0 0; padding-left: 18px; }
+    li { margin: 10px 0; }
+    .pill {
+      display:inline-block; padding: 3px 9px; border-radius: 999px;
+      border:1px solid rgba(0,0,0,.16); font-size: 12px; opacity:.9; margin-left: 8px;
+    }
+    .muted { color: var(--mut); font-size: 14px; }
+    .small { font-size: 13px; color: var(--mut); }
+    a { text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .actions { margin-top: 6px; display:flex; gap:12px; flex-wrap:wrap; }
+    .actlink { font-weight:650; }
+    footer { max-width:1120px; margin:0 auto; padding: 16px 18px 30px; color: var(--mut); font-size: 13px; }
+    .note { border-left: 4px solid rgba(0,0,0,.15); padding-left: 12px; }
+  </style>
 </head>
-
 <body>
 
-<h1>Nousukiito – kiinteistöt kunnittain</h1>
-
-<div id="content"></div>
-
-<script>
-fetch("data.json")
-.then(r=>r.json())
-.then(data=>{
-
-let kunnat={}
-
-data.forEach(i=>{
- if(!kunnat[i.kunta]) kunnat[i.kunta]=[]
- kunnat[i.kunta].push(i)
-})
-
-let html=""
-
-Object.keys(kunnat).sort().forEach(kunta=>{
-
- html+=`<div class="card"><h2>${kunta}</h2>`
-
- kunnat[kunta].forEach(k=>{
-
- html+=`
- <div>
- ${k.tunnus} ${k.nimi ? "– "+k.nimi : ""}
- <br>
- <a href="#" onclick="openMap('${k.tunnus}')">Avaa kartassa</a>
- </div>
- <br>
- `
-
- })
-
- html+="</div>"
-
-})
-
-document.getElementById("content").innerHTML=html
-
-})
-
-function openMap(t){
-navigator.clipboard.writeText(t)
-window.open("https://kartta.paikkatietoikkuna.fi/?lang=fi","_blank")
-alert("Kiinteistötunnus kopioitu: "+t)
-}
-</script>
-
-</body>
-</html>
+<header>
+  <div cla
