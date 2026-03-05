@@ -375,7 +375,10 @@
     document.getElementById("btn-en").classList.toggle("active", LANG === "en");
     document.getElementById("btn-de").classList.toggle("active", LANG === "de");
 
-    render(filter(document.getElementById("q").value));
+    
+  // Show translation note only for non-Finnish
+document.getElementById("aiNote").style.display = (LANG === "fi") ? "none" : "block";  
+  render(filter(document.getElementById("q").value));
   }
 
   function setLang(l) { LANG = l; applyLang(); }
