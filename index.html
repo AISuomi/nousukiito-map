@@ -247,10 +247,10 @@
       mapTitle: "Kartta",
       mapHint: "Klikkaa kuntaa → listaus avautuu",
       mapNote: "Kartta on yleiskuva: klikkaa kuntaa ja selaa kohteet. Kiinteistörajoja ei näytetä (lohkomisia voi olla kesken).",
-      openMap: "Avaa kartassa",
+      openMap: "Kopioi tunnus ja avaa kartta",
       copyId: "Kopioi tunnus",
       copied: "Kiinteistötunnus kopioitu: ",
-      pasteHint: "Liitä se Paikkatietoikkunan hakuun (Ctrl+V).",
+      pasteHint: "Liitä tunnus karttapalvelun hakuun (Ctrl+V).",
       noHits: "Ei osumia.",
       tryOther: "Kokeile toista hakusanaa.",
       footer: "© Nousukiito — Kiinteistötunnukset kunnittain",
@@ -288,7 +288,7 @@
       mapTitle: "Map",
       mapHint: "Gemeinde anklicken → Liste öffnen",
       mapNote: "Übersichtskarte: Gemeinde anklicken, um die Liste zu öffnen. Grundstücksgrenzen werden nicht angezeigt (Teilungen können in Arbeit sein).",
-      openMap: "Open map",
+      openMap: "Copy ID and open map",
       copyId: "Copy ID",
       copied: "Property ID copied: ",
       pasteHint: "Paste it into the Paikkatietoikkuna search (Ctrl+V).",
@@ -329,10 +329,10 @@
       mapTitle: "Karte",
       mapHint: "Gemeinde anklicken → Liste öffnen",
       mapNote: "Übersichtskarte: Gemeinde anklicken, um die Liste zu öffnen. Grundstücksgrenzen werden nicht angezeigt (Teilungen können in Arbeit sein).",
-      openMap: "Karte öffnen",
+      openMap: "ID kopieren und Karte öffnen",
       copyId: "ID kopieren",
       copied: "Grundstücks-ID kopiert: ",
-      pasteHint: "Füge sie in die Suche von Paikkatietoikkuna ein (Strg+V).",
+      pasteHint: "Fügen Sie die ID in das Suchfeld der Karte ein (Strg+V).",
       noHits: "Keine Treffer.",
       tryOther: "Bitte einen anderen Suchbegriff versuchen.",
       footer: "© Nousukiito — Grundstücke nach Gemeinde",
@@ -409,12 +409,20 @@
     catch { return false; }
   }
 
-  async function openPaikkatietoWithCopy(tunnus) {
-    const ok = await copyToClipboard(tunnus);
-    window.open(PAIKKATIETO_URL, "_blank", "noopener");
-    if (ok) alert(I18N[LANG].copied + tunnus + "\n" + I18N[LANG].pasteHint);
-    else prompt(I18N[LANG].copyId + ":", tunnus);
+async function openPaikkatietoWithCopy(tunnus) {
+  const ok = await copyToClipboard(tunnus);
+  window.open(PAIKKATIETO_URL, "_blank", "noopener");
+
+  if (ok) {
+    alert(
+      I18N[LANG].copied + tunnus +
+      "\n\n" +
+      I18N[LANG].pasteHint
+    );
+  } else {
+    prompt(I18N[LANG].copyId + ":", tunnus);
   }
+}
 
   async function justCopy(tunnus) {
     const ok = await copyToClipboard(tunnus);
