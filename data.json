@@ -1,5 +1,4 @@
 [
-  {"kunta":"Enontekiö","tunnus":"47-402-6-20","nimi":"Rontti","laji":"Tila","huom":""},
   {"kunta":"Enontekiö","tunnus":"47-406-14-23","nimi":"Lauttaniemi","laji":"Tila","huom":""},
   {"kunta":"Ii","tunnus":"139-409-57-4","nimi":"Suopursu","laji":"Tila","huom":""},
   {"kunta":"Ilomantsi","tunnus":"146-432-10-25","nimi":"LÄHTEENKORVA","laji":"Tila","huom":""},
@@ -11,7 +10,6 @@
   {"kunta":"Inari","tunnus":"148-402-11-2","nimi":"MURTOLA","laji":"Tila","huom":""},
   {"kunta":"Inari","tunnus":"148-404-7-2","nimi":"SAMPPALA","laji":"Tila","huom":""},
   {"kunta":"Inari","tunnus":"148-404-7-7","nimi":"JÄNKÄLÄ","laji":"Tila","huom":""},
-  {"kunta":"Inari","tunnus":"148-404-7-26","nimi":"Nousukiito Oy","laji":"Tila","huom":""},
   {"kunta":"Inari","tunnus":"148-406-114-0","nimi":"KUOTKU","laji":"Tila","huom":""},
   {"kunta":"Inari","tunnus":"148-406-114-6","nimi":"Kuosnakangas","laji":"Tila","huom":""},
   {"kunta":"Inari","tunnus":"148-406-114-14","nimi":"Lisämaa","laji":"Tila","huom":""},
@@ -87,7 +85,7 @@
   {"kunta":"Salla","tunnus":"732-410-15-0","nimi":"OPINALKU","laji":"Tila","huom":""},
   {"kunta":"Salla","tunnus":"732-412-7-22","nimi":"NISKALA","laji":"Tila","huom":""},
   {"kunta":"Salla","tunnus":"732-419-34-1","nimi":"SelkäläNaruska","laji":"Tila","huom":""},
-  {"kunta":"Salla","tunnus":"732-422-101-0","nimi":"TIUKUVUOTSO","laji":"Tila","huom":"Lainhuudattamaton"},
+  {"kunta":"Salla","tunnus":"732-422-101-0","nimi":"TIUKUVUOTSO","laji":"Tila","huom":""},
 
   {"kunta":"Savukoski","tunnus":"742-403-9-66","nimi":"UUSI-EROLA","laji":"Tila","huom":""},
   {"kunta":"Savukoski","tunnus":"742-403-9-92","nimi":"KIRKKOMAA","laji":"Tila","huom":""},
@@ -100,7 +98,6 @@
   {"kunta":"Tervola","tunnus":"845-404-8-40","nimi":"UUTELA","laji":"Tila","huom":""},
 
   {"kunta":"Utsjoki","tunnus":"890-403-13-73","nimi":"Guolbba","laji":"Tila","huom":""},
-  {"kunta":"Utsjoki","tunnus":"890-403-13-75","nimi":"Nousukiito Oy","laji":"Tila","huom":""},
   {"kunta":"Utsjoki","tunnus":"890-403-21-41","nimi":"Nousukiito","laji":"Tila","huom":""},
   {"kunta":"Utsjoki","tunnus":"890-403-36-16","nimi":"Jaati","laji":"Tila","huom":""},
 
