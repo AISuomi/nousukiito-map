@@ -239,7 +239,7 @@
   const I18N = {
     fi: {
       title: "Kiinteistöt kunnittain",
-      subtitle: "Etsi kunta, kiinteistötunnus tai nimi. Avatessa kartan tunnus kopioituu valmiiksi.",
+   subtitle: "Etsi kunta, kiinteistötunnus tai nimi. Karttaa klikkaamalla näet kyseisen kunnan kohteet.",
       searchPh: "Hae: kunta (Inari) / tunnus (148-401...) / nimi (JUSSILA)",
       clear: "Tyhjennä",
       aiNote: "",
@@ -280,14 +280,14 @@
     },
     en: {
       title: "Properties by municipality",
-      subtitle: "Search by municipality, property ID, or name. When opening the map, the ID is copied automatically.",
+      subtitle: "Search by municipality, property ID or name. Click a municipality on the map to see available properties.",
       searchPh: "Search: municipality (Inari) / ID (148-401...) / name (JUSSILA)",
       clear: "Clear",
       aiNote: "Note: Some translations on this site are AI-assisted. For non-Finnish enquiries, written contact (email/message) is preferred to ensure accurate understanding.",
       disclaimer: "Map services may show boundaries/plots that do not fully reflect the current sales situation due to pending parceling processes or previously sold parts.",
       mapTitle: "Map",
-      mapHint: "Click a municipality → open the list",
-      mapNote: "Overview map: click a municipality to view the listings. Property boundaries are not shown (parceling may be in progress).",
+      mapHint: "Gemeinde anklicken → Liste öffnen",
+      mapNote: "Übersichtskarte: Gemeinde anklicken, um die Liste zu öffnen. Grundstücksgrenzen werden nicht angezeigt (Teilungen können in Arbeit sein).",
       openMap: "Open map",
       copyId: "Copy ID",
       copied: "Property ID copied: ",
@@ -321,7 +321,7 @@
     },
     de: {
       title: "Grundstücke nach Gemeinde",
-      subtitle: "Suche nach Gemeinde, Grundstücks-ID oder Name. Beim Öffnen der Karte wird die ID automatisch kopiert.",
+      subtitle: "Suche nach Gemeinde, Grundstücks-ID oder Name. Klicken Sie eine Gemeinde auf der Karte an, um verfügbare Grundstücke zu sehen.",
       searchPh: "Suche: Gemeinde (Inari) / ID (148-401...) / Name (JUSSILA)",
       clear: "Leeren",
       aiNote: "Hinweis: Einige Übersetzungen auf dieser Seite sind KI-gestützt. Für Anfragen in Fremdsprachen bevorzugen wir schriftliche Kontaktaufnahme (E-Mail/Nachricht), um Missverständnisse zu vermeiden.",
@@ -464,8 +464,8 @@
 
                 return `
                   <li>
-                    <b>${escapeHtml(t)}</b>
-                    ${nimi ? `<span class="small"> — ${escapeHtml(nimi)}</span>` : ""}
+                    <div style="font-weight:700">${escapeHtml(t)}</div>
+                    ${nimi ? `<div class="small">${escapeHtml(nimi)}</div>` : ""}
                     ${huom ? `<div class="muted">Huom: ${escapeHtml(huom)}</div>` : ""}
                     <div class="actions">
                       <a class="actlink" href="#" onclick="openPaikkatietoWithCopy('${escapeHtml(t)}'); return false;">
